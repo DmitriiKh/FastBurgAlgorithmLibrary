@@ -1,4 +1,6 @@
 language: csharp
+sudo: required 
+dist: trusty
 solution: FastBurgAlgorithmLibrary.sln
 mono: 5.2.0
 dotnet: 2.0.0
@@ -8,5 +10,5 @@ install:
 script:
   - dotnet restore
   - dotnet build
-  - dotnet test ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.csproj
+  - dotnet test ./FastBurgAlgorithmLibraryUnitTests/FastBurgAlgorithmLibraryUnitTests.csproj
 
