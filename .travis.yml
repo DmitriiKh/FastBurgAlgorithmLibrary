@@ -6,6 +6,6 @@ install:
   - export FrameworkPathOverride=$(dirname $(which mono))/../lib/mono/4.5/
 script:
   - dotnet restore
-  - dotnet build
+  - dotnet build /t:restore
   - dotnet test ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.csproj
 
