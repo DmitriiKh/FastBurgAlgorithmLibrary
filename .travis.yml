@@ -1,7 +1,9 @@
 language: csharp
 solution: FastBurgAlgorithmLibrary.sln
+mono: none
+dotnet: 1.1.5
 script:
-  - xbuild /p:Configuration=Release FastBurgAlgorithmLibrary.sln
-  - mono ./packages/xunit.runners.*/tools/xunit.console.clr4.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.dll
-  - cd ./packages
-  - dir
+  - dotnet restore
+  - dotnet build
+  - dotnet test ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.csproj
+
