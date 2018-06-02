@@ -1,13 +1,14 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace FastBurgAlgorithmLibraryUnitTests
 {
+    [TestFixture]
     public class Class1
     {
-        [Fact]
+        [Test]
         public void PassingTest()
         {
-            Assert.Equal(4, Add(2, 2));
+            Assert.AreEqual(4, Add(2, 2));
         }
 
         int Add(int x, int y)
