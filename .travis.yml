@@ -8,5 +8,5 @@ install:
 script:
   - dotnet restore
   - dotnet build
-  - dotnet test ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.csproj
+  - dotnet test ./FastBurgAlgorithmLibraryUnitTests/FastBurgAlgorithmLibraryUnitTests.csproj
 
