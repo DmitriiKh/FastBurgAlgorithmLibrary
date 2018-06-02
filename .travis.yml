@@ -1,6 +1,8 @@
 language: csharp
 solution: FastBurgAlgorithmLibrary.sln
 install:
+  - cd /home/travis/.nuget/packages/
+  - dir
   - nuget restore FastBurgAlgorithmLibrary.sln
   - nuget install xunit.runners -Version 2.3.0 -OutputDirectory testrunner
 script:
