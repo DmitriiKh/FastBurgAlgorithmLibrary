@@ -1,7 +1,12 @@
 language: csharp
 solution: FastBurgAlgorithmLibrary.sln
+mono: 5.2.0
+dotnet: 2.0.0
+install:
+  - export FrameworkPathOverride=$(dirname $(which mono))/../lib/mono/4.5/
+  - nuget restore FastBurgAlgorithmLibrary.sln
 script:
-  - xbuild /p:Configuration=Release FastBurgAlgorithmLibrary.sln
-  - mono ./packages/xunit.runners.*/tools/xunit.console.clr4.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.dll
-  - cd ./packages
-  - dir
+  - dotnet restore
+  - dotnet build
+  - dotnet test ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.csproj
+
