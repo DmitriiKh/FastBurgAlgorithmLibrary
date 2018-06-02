@@ -7,6 +7,6 @@ install:
   - nuget restore FastBurgAlgorithmLibrary.sln
 script:
   - dotnet restore
-  - dotnet build /t:restore
+  - dotnet build
   - dotnet test ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.csproj
 
