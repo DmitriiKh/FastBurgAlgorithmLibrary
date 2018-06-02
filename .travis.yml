@@ -4,6 +4,7 @@ dist: trusty
 solution: FastBurgAlgorithmLibrary.sln
 install:
   - nuget restore FastBurgAlgorithmLibrary.sln
+  - nuget install NUnit.Runners -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release FastBurgAlgorithmLibrary.sln
-  - mono ./packages/NUnit.Runners.*/tools/nunit-console.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.dll
+  - mono ./testrunner/NUnit.Runners.*/tools/nunit-console.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.dll
