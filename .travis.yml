@@ -2,13 +2,9 @@ language: csharp
 sudo: required 
 dist: trusty
 solution: FastBurgAlgorithmLibrary.sln
-mono: 5.2.0
-dotnet: 2.0.0
 install:
-  - export FrameworkPathOverride=$(dirname $(which mono))/../lib/mono/4.5/
   - nuget restore FastBurgAlgorithmLibrary.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - dotnet restore
-  - dotnet build
-  - dotnet test ./FastBurgAlgorithmLibraryUnitTests/FastBurgAlgorithmLibraryUnitTests.csproj
-
+  - xbuild /p:Configuration=Release FastBurgAlgorithmLibrary.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.csproj
