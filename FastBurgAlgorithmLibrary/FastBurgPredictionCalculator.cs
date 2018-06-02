@@ -6,48 +6,54 @@ using System.Threading.Tasks;
 
 namespace FastBurgAlgorithmLibrary
 {
-    public static class FastBurgPredictionCalculator
+    public class FastBurgPredictionCalculator
     {
+        private int i;
+        private double[,] g;
+        private double[] r;
+
+        public double[] a { get; set; }
+
+        public FastBurgPredictionCalculator(int coefficientsNumber)
+        {
+            a = new double[coefficientsNumber];
+            g = new double[coefficientsNumber, 2];
+            r = new double[coefficientsNumber];
+        }
+
         /// <summary>
         /// Calculates one prediction error value for one sample using CPU
         /// For details please see "vos_fastburg.pdf"
         /// </summary>
-        public static void Calculate(
-            float[] inputAudio,
+        public void Calculate(
+            float[] inputSignal,
             float[] forwardPredictions,
             float[] backwardPredictions,
             int position,
             int coefficientsNumber,
             int historyLengthSamples)
         {
-            Initialization(inputAudio, position, coefficientsNumber, historyLengthSamples);
+            Initialization(inputSignal, position, coefficientsNumber, historyLengthSamples);
 
 
 
 
 
-            double ACCUM = 0.0;
-
-            for (int I = 1; I <= coefficientsNumber; I++)
-                ACCUM += inputAudio[position - I] * (-1) * a[I];
-
-            forwardPredictions[position] = (float)ACCUM;
-
-            ACCUM = 0.0;
-            for (int I = 1; I <= coefficientsNumber; I++)
-                ACCUM += inputAudio[position - historyLengthSamples + I] *
-                    (-1) * a[I];
-
-            backwardPredictions[position - historyLengthSamples] =
-                (float)ACCUM;
+           
         }
 
-        private static void Initialization(float[] inputAudio, int position, int coefficientsNumber, int historyLengthSamples)
+        private void Initialization(float[] inputSignal, int position, int coefficientsNumber, int historyLengthSamples)
         {
-            double[] c = FindAutocorrelation(inputAudio, position, coefficientsNumber, historyLengthSamples);
+            double[] c = FindAutocorrelation(inputSignal, position, coefficientsNumber, historyLengthSamples);
+            i = 0;
+            a[0] = 1;
+            g[0, 0] = 2 * c[0] - Math.Pow(Math.Abs(inputSignal[position - historyLengthSamples]), 2) -
+                Math.Pow(Math.Abs(inputSignal[position - 1]), 2);
+            g[0, 1] = 2 * c[1];
+            r[1] = 2 * c[1];
         }
 
-        private static double[] FindAutocorrelation(float[] inputAudio, int position, int coefficientsNumber, int historyLengthSamples)
+        private double[] FindAutocorrelation(float[] inputSignal, int position, int coefficientsNumber, int historyLengthSamples)
         {
             double[] c = new double[coefficientsNumber + 1];
 
@@ -55,7 +61,7 @@ namespace FastBurgAlgorithmLibrary
             {
                 c[j] = 0;
                 for (int index = position - historyLengthSamples; index <= historyLengthSamples - 1 - j; index++)
-                    c[j] += inputAudio[index] * inputAudio[index + j];
+                    c[j] += inputSignal[index] * inputSignal[index + j];
             }
 
             return c;
