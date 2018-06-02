@@ -1,11 +1,7 @@
 language: csharp
-sudo: required 
-dist: trusty
 solution: FastBurgAlgorithmLibrary.sln
 install:
   - nuget restore FastBurgAlgorithmLibrary.sln
 script:
   - xbuild /p:Configuration=Release FastBurgAlgorithmLibrary.sln
   - mono ./packages/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.dll
-  - cd ./testrunner/NUnit.ConsoleRunner.3.8.0/tools
-  - dir
