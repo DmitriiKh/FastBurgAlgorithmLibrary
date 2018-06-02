@@ -1,4 +1,6 @@
 language: csharp
+sudo: required 
+dist: trusty
 solution: FastBurgAlgorithmLibrary.sln
 mono: 5.2.0
 dotnet: 2.0.0
