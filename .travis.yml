@@ -2,6 +2,6 @@ language: csharp
 solution: FastBurgAlgorithmLibrary.sln
 script:
   - xbuild /p:Configuration=Release FastBurgAlgorithmLibrary.sln
-  - mono ./packages/xunit.runner.*/tools/xunit.console.clr4.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.dll
+  - mono ./packages/xunit.runners.*/tools/xunit.console.clr4.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.dll
   - cd ./packages
   - dir
