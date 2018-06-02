@@ -8,8 +8,9 @@ install:
 script:
   - xbuild /p:Configuration=Release FastBurgAlgorithmLibrary.sln
   - mono ./testrunner/NUnit.Runners.3.8.0/tools/nunit-console.exe ./FastBurgAlgorithmLibraryUnitTests/bin/Release/FastBurgAlgorithmLibraryUnitTests.dll
-  - cd ./testrunner
+  - cd ./testrunner/NUnit.Runners.3.8.0
   - dir
   - cd ..
-  - cd ./packeges
+  - cd ..
+  - cd ./packages
   - dir
