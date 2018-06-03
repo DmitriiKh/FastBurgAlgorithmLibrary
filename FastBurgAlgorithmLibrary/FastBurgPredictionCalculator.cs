@@ -43,13 +43,18 @@ namespace FastBurgAlgorithmLibrary
 
         private void UpdatePredictionCoefs()
         {
-            throw new NotImplementedException();
+            for (int index = 0; index <= i_iterationCounter + 1; index++)
+            {
+                a_predictionCoefs[index] = a_predictionCoefs[index] + 
+                    k_reflectionCoefs[i_iterationCounter] * 
+                    a_predictionCoefs[J_inversOrder(index)];
+            }
         }
 
         private void ComputeReflectionCoefs()
         {
             // for real numbers input signals
-            for (int index = 0; index <= i_iterationCounter + 1)
+            for (int index = 0; index <= i_iterationCounter + 1; index++)
             {
                 k_reflectionCoefs[i_iterationCounter] += g[J_inversOrder(index)] * g[index];
             }
