@@ -5,17 +5,17 @@ namespace FastBurgAlgorithmLibrary
     public class FastBurgPredictionCalculator
     {
         private int i_iterationCounter;
-        private double[,] g;
+        private double[] g;
         private double[] r;
         private double[] k_reflectionCoefs;
 
         public double[] a_predictionCoefs { get; set; }
 
-        public FastBurgPredictionCalculator(int coefficientsNumber)
+        public FastBurgPredictionCalculator(int m_coefficientsNumber)
         {
-            a_predictionCoefs = new double[coefficientsNumber];
-            g = new double[coefficientsNumber, 2];
-            r = new double[coefficientsNumber];
+            a_predictionCoefs = new double[m_coefficientsNumber];
+            g = new double[m_coefficientsNumber + 1];
+            r = new double[m_coefficientsNumber];
         }
 
         /// <summary>
@@ -34,15 +34,31 @@ namespace FastBurgAlgorithmLibrary
 
             ComputeReflectionCoefs();
 
+            UpdatePredictionCoefs();
+
 
 
            
         }
 
+        private void UpdatePredictionCoefs()
+        {
+            throw new NotImplementedException();
+        }
+
         private void ComputeReflectionCoefs()
         {
             // for real numbers input signals
-            k_reflectionCoefs[i_iterationCounter] = - g[i_iterationCounter, 1] / g[i_iterationCounter, 0]; 
+            for (int index = 0; index <= i_iterationCounter + 1)
+            {
+                k_reflectionCoefs[i_iterationCounter] += g[J_inversOrder(index)] * g[index];
+            }
+            k_reflectionCoefs[i_iterationCounter] = - k_reflectionCoefs[i_iterationCounter];
+        }
+
+        private int J_inversOrder(int index)
+        {
+            return i_iterationCounter + 1 - index;
         }
 
         private void Initialization(float[] inputSignal, int position, int coefficientsNumber, int historyLengthSamples)
@@ -51,10 +67,10 @@ namespace FastBurgAlgorithmLibrary
 
             i_iterationCounter = 0;
             a_predictionCoefs[0] = 1;
-            g[0, 0] = 2 * c[0] - 
+            g[0] = 2 * c[0] - 
                 Math.Pow(Math.Abs(inputSignal[position - historyLengthSamples]), 2) -
                 Math.Pow(Math.Abs(inputSignal[position - 1]), 2);
-            g[0, 1] = 2 * c[1];
+            g[1] = 2 * c[1];
             r[1] = 2 * c[1];
         }
 
