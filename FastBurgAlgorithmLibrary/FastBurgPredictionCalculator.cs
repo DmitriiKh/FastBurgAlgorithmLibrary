@@ -7,12 +7,13 @@ namespace FastBurgAlgorithmLibrary
         private int i_iterationCounter;
         private double[,] g;
         private double[] r;
+        private double[] k_reflectionCoefs;
 
-        public double[] a_predictionCoefficients { get; set; }
+        public double[] a_predictionCoefs { get; set; }
 
         public FastBurgPredictionCalculator(int coefficientsNumber)
         {
-            a_predictionCoefficients = new double[coefficientsNumber];
+            a_predictionCoefs = new double[coefficientsNumber];
             g = new double[coefficientsNumber, 2];
             r = new double[coefficientsNumber];
         }
@@ -31,11 +32,17 @@ namespace FastBurgAlgorithmLibrary
         {
             Initialization(inputSignal, position, coefficientsNumber, historyLengthSamples);
 
-
+            ComputeReflectionCoefs();
 
 
 
            
+        }
+
+        private void ComputeReflectionCoefs()
+        {
+            // for real numbers input signals
+            k_reflectionCoefs[i] = -1; 
         }
 
         private void Initialization(float[] inputSignal, int position, int coefficientsNumber, int historyLengthSamples)
@@ -43,7 +50,7 @@ namespace FastBurgAlgorithmLibrary
             double[] c = FindAutocorrelation(inputSignal, position, coefficientsNumber, historyLengthSamples);
 
             i_iterationCounter = 0;
-            a_predictionCoefficients[0] = 1;
+            a_predictionCoefs[0] = 1;
             g[0, 0] = 2 * c[0] - 
                 Math.Pow(Math.Abs(inputSignal[position - historyLengthSamples]), 2) -
                 Math.Pow(Math.Abs(inputSignal[position - 1]), 2);
