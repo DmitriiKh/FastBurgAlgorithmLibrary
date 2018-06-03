@@ -42,7 +42,7 @@ namespace FastBurgAlgorithmLibrary
         private void ComputeReflectionCoefs()
         {
             // for real numbers input signals
-            k_reflectionCoefs[i] = -1; 
+            k_reflectionCoefs[i_iterationCounter] = - g[i_iterationCounter, 1] / g[i_iterationCounter, 0]; 
         }
 
         private void Initialization(float[] inputSignal, int position, int coefficientsNumber, int historyLengthSamples)
