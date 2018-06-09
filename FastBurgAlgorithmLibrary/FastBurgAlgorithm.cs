@@ -132,7 +132,7 @@ namespace FastBurgAlgorithmLibrary
                     x_inputSignal[i_iterationCounter];
             }
             // updating r[0] after r[1:i_iterationCounter] are done
-            r[0] = 2 * c[i_iterationCounter];
+            r[0] = 2 * c[i_iterationCounter + 1];
         }
 
         private void UpdatePredictionCoefs()
