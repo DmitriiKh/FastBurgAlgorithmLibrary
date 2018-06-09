@@ -35,7 +35,8 @@ namespace FastBurgAlgorithmLibrary
             int historyLengthSamples)
         {
             absolutePosition = position;
-
+            m_coefficientsNumber = coefficientsNumber;
+            N_historyLengthSamples = historyLengthSamples;
             a_predictionCoefs = new double[m_coefficientsNumber + 1];
             g = new double[m_coefficientsNumber + 1];
             r = new double[m_coefficientsNumber + 1];
@@ -43,10 +44,10 @@ namespace FastBurgAlgorithmLibrary
             k_reflectionCoefs = new double[m_coefficientsNumber + 1];
             deltaRAndAProduct = new double[m_coefficientsNumber + 1];
 
+            Initialization();
+
             while (i_iterationCounter < m_coefficientsNumber)
             {
-                Initialization(position, coefficientsNumber, historyLengthSamples);
-
                 ComputeReflectionCoefs();
 
                 UpdatePredictionCoefs();
@@ -160,18 +161,14 @@ namespace FastBurgAlgorithmLibrary
             return i_iterationCounter + 1 - index;
         }
 
-        private void Initialization(int position, int coefficientsNumber, int historyLengthSamples)
+        private void Initialization()
         {
-            m_coefficientsNumber = coefficientsNumber;
-            N_historyLengthSamples = historyLengthSamples;
-            absolutePosition = position;
-
             c = FindAutocorrelation();
 
             i_iterationCounter = 0;
             a_predictionCoefs[0] = 1;
             g[0] = 2 * c[0] - 
-                Math.Pow(Math.Abs(x_inputSignal[absolutePosition - historyLengthSamples]), 2) -
+                Math.Pow(Math.Abs(x_inputSignal[absolutePosition - N_historyLengthSamples]), 2) -
                 Math.Pow(Math.Abs(x_inputSignal[absolutePosition - 1]), 2);
             g[1] = 2 * c[1];
             // the paper says r[1], error?
