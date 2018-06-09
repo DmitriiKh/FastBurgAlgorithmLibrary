@@ -76,12 +76,16 @@ namespace FastBurgAlgorithmLibrary
 
         private void ComputeReflectionCoefs()
         {
+            double numerator = 0;
+            double denominator = 0;
             // for real numbers input signals
             for (int index = 0; index <= i_iterationCounter + 1; index++)
             {
-                k_reflectionCoefs[i_iterationCounter] += g[J_inversOrder(index)] * g[index];
+                numerator += a_predictionCoefs[index] * g[J_inversOrder(index)];
+                denominator += a_predictionCoefs[index] * g[index];
             }
-            k_reflectionCoefs[i_iterationCounter] = - k_reflectionCoefs[i_iterationCounter];
+
+            k_reflectionCoefs[i_iterationCounter] = - numerator / denominator;
         }
 
         private int J_inversOrder(int index)
