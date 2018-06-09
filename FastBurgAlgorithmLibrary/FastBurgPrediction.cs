@@ -67,10 +67,10 @@ namespace FastBurgAlgorithmLibrary
         public float GetForwardPrediction()
         {
             double prediction = 0;
-            for (int index = 0; index <= a_predictionCoefs.Length - 1; index++)
+            for (int index = 1; index <= a_predictionCoefs.Length - 1; index++)
             {
                 prediction -= a_predictionCoefs[index] * 
-                    x_inputSignal[absolutePosition - 1 - index];
+                    x_inputSignal[absolutePosition - index];
             }
 
             return (float)prediction;
