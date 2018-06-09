@@ -8,11 +8,15 @@ namespace FastBurgAlgorithmLibrary
         private int i_iterationCounter;
         private int m_coefficientsNumber;
         private int N_historyLengthSamples;
-        private float[] x_inputSignal;
+        private readonly float[] x_inputSignal;
         private double[] g;
         private double[] r;
         private double[] c;
         private double[] k_reflectionCoefs;
+        /// <summary>
+        /// Product of deltaR matrix and a_predictionCoefs
+        /// </summary>
+        private double[] deltaRAndAProduct;
 
         public double[] a_predictionCoefs { get; set; }
 
@@ -33,21 +37,66 @@ namespace FastBurgAlgorithmLibrary
             int coefficientsNumber,
             int historyLengthSamples)
         {
-            Initialization(position, coefficientsNumber, historyLengthSamples);
+            while (i_iterationCounter < m_coefficientsNumber)
+            {
+                Initialization(position, coefficientsNumber, historyLengthSamples);
 
-            ComputeReflectionCoefs();
+                ComputeReflectionCoefs();
 
-            UpdatePredictionCoefs();
+                UpdatePredictionCoefs();
 
-            i_iterationCounter++;
-            if (i_iterationCounter == m_coefficientsNumber)
-                return;
+                i_iterationCounter++;
+                if (i_iterationCounter == m_coefficientsNumber)
+                    return;
 
-            UpdateR();
+                UpdateR();
 
+                ComputeDeltaRMultByA();
 
+                UpdateG();
+            }
+        }
 
-           
+        private void UpdateG()
+        {
+            for (int index = 0; index <= i_iterationCounter - 1; index++)
+            {
+                g[index] = 
+                    g[index] + 
+                    k_reflectionCoefs[index] * g[J_inversOrder(index)] + 
+                    deltaRAndAProduct[index];
+            }
+
+            for (int index = 0; index <= i_iterationCounter - 1; index++)
+            {
+                g[i_iterationCounter] += r[index] * a_predictionCoefs[index];
+            }
+        }
+
+        private void ComputeDeltaRMultByA()
+        {
+            for (int indexRow = 0; indexRow <= i_iterationCounter; indexRow++)
+            {
+                double innerProduct1 = 0;
+                double innerProduct2 = 0;
+                for (int indexColumn = 0; 
+                    indexColumn <= i_iterationCounter; 
+                    indexColumn++)
+                {
+                    innerProduct1 += 
+                        x_inputSignal[i_iterationCounter - indexColumn] * 
+                        a_predictionCoefs[indexColumn];
+                    innerProduct2 += 
+                        x_inputSignal[absolutePosition - 1 - indexColumn] * 
+                        a_predictionCoefs[indexColumn];
+                }
+
+                deltaRAndAProduct[indexRow] =
+                    -x_inputSignal[indexRow] *
+                    innerProduct1 -
+                    x_inputSignal[absolutePosition - 1 - indexRow] * 
+                    innerProduct2;
+            }
         }
 
         private void UpdateR()
@@ -60,7 +109,7 @@ namespace FastBurgAlgorithmLibrary
                     x_inputSignal[absolutePosition - 1 - index] *
                     x_inputSignal[i_iterationCounter];
             }
-            // upfating r[0] after r[1:i_iterationCounter] are done
+            // updating r[0] after r[1:i_iterationCounter] are done
             r[0] = 2 * c[i_iterationCounter];
         }
 
