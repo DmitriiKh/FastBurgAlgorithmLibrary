@@ -23,9 +23,12 @@ namespace FastBurgAlgorithmLibrary
         public FastBurgPredictionCalculator(float[] inputSignal)
         {
             x_inputSignal = inputSignal;
-            a_predictionCoefs = new double[m_coefficientsNumber];
+            a_predictionCoefs = new double[m_coefficientsNumber + 1];
             g = new double[m_coefficientsNumber + 1];
-            r = new double[m_coefficientsNumber];
+            r = new double[m_coefficientsNumber + 1];
+            c = new double[m_coefficientsNumber + 1];
+            k_reflectionCoefs = new double[m_coefficientsNumber + 1];
+            deltaRAndAProduct = new double[m_coefficientsNumber + 1];
         }
 
         /// <summary>
@@ -55,6 +58,18 @@ namespace FastBurgAlgorithmLibrary
 
                 UpdateG();
             }
+        }
+
+        public float GetForwardPrediction()
+        {
+            double prediction = 0;
+            for (int index = 0; index <= a_predictionCoefs.Length - 1; index++)
+            {
+                prediction -= a_predictionCoefs[index] * 
+                    x_inputSignal[absolutePosition - 1 - index];
+            }
+
+            return (float)prediction;
         }
 
         private void UpdateG()
