@@ -60,7 +60,7 @@ namespace FastBurgAlgorithmLibrary
                     x_inputSignal[absolutePosition - 1 - index] *
                     x_inputSignal[i_iterationCounter];
             }
-
+            // upfating r[0] after r[1:i_iterationCounter] are done
             r[0] = 2 * c[i_iterationCounter];
         }
 
