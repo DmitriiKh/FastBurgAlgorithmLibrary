@@ -106,7 +106,8 @@ namespace FastBurgAlgorithmLibrary
                     indexColumn++)
                 {
                     innerProduct1 += 
-                        x_inputSignal[absolutePosition - N_historyLengthSamples + i_iterationCounter - indexColumn] * 
+                        x_inputSignal[absolutePosition - N_historyLengthSamples + 
+                            i_iterationCounter - indexColumn] * 
                         a_predictionCoefs[indexColumn];
                     innerProduct2 += 
                         x_inputSignal[absolutePosition - 1 - indexColumn] * 
@@ -114,7 +115,8 @@ namespace FastBurgAlgorithmLibrary
                 }
 
                 deltaRAndAProduct[indexRow] =
-                    -x_inputSignal[indexRow] *
+                    -x_inputSignal[absolutePosition - N_historyLengthSamples + 
+                        i_iterationCounter - indexRow] *
                     innerProduct1 -
                     x_inputSignal[absolutePosition - 1 - indexRow] * 
                     innerProduct2;
