@@ -2,7 +2,7 @@
 
 namespace FastBurgAlgorithmLibrary
 {
-    public class FastBurgPredictionCalculator
+    public class FastBurgPrediction
     {
         private int absolutePosition;
         private int i_iterationCounter;
@@ -20,7 +20,7 @@ namespace FastBurgAlgorithmLibrary
 
         public double[] a_predictionCoefs { get; set; }
 
-        public FastBurgPredictionCalculator(float[] inputSignal)
+        public FastBurgPrediction(float[] inputSignal)
         {
             x_inputSignal = inputSignal;
             a_predictionCoefs = new double[m_coefficientsNumber + 1];
@@ -35,7 +35,7 @@ namespace FastBurgAlgorithmLibrary
         /// Calculates one prediction error value for one sample using CPU
         /// For details please see "vos_fastburg.pdf"
         /// </summary>
-        public void Calculate(
+        public void Train(
             int position,
             int coefficientsNumber,
             int historyLengthSamples)
