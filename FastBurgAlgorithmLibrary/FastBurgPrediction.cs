@@ -23,12 +23,6 @@ namespace FastBurgAlgorithmLibrary
         public FastBurgPrediction(float[] inputSignal)
         {
             x_inputSignal = inputSignal;
-            a_predictionCoefs = new double[m_coefficientsNumber + 1];
-            g = new double[m_coefficientsNumber + 1];
-            r = new double[m_coefficientsNumber + 1];
-            c = new double[m_coefficientsNumber + 1];
-            k_reflectionCoefs = new double[m_coefficientsNumber + 1];
-            deltaRAndAProduct = new double[m_coefficientsNumber + 1];
         }
 
         /// <summary>
@@ -41,6 +35,13 @@ namespace FastBurgAlgorithmLibrary
             int historyLengthSamples)
         {
             absolutePosition = position;
+
+            a_predictionCoefs = new double[m_coefficientsNumber + 1];
+            g = new double[m_coefficientsNumber + 1];
+            r = new double[m_coefficientsNumber + 1];
+            c = new double[m_coefficientsNumber + 1];
+            k_reflectionCoefs = new double[m_coefficientsNumber + 1];
+            deltaRAndAProduct = new double[m_coefficientsNumber + 1];
 
             while (i_iterationCounter < m_coefficientsNumber)
             {
