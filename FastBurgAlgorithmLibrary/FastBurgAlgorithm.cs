@@ -81,7 +81,8 @@ namespace FastBurgAlgorithmLibrary
 
         private void UpdateG()
         {
-            for (int index = 0; index <= i_iterationCounter - 1; index++)
+            // g.Length is i_iterationCounter + 1
+            for (int index = 0; index <= i_iterationCounter; index++)
             {
                 g[index] = 
                     g[index] + 
@@ -89,9 +90,9 @@ namespace FastBurgAlgorithmLibrary
                     deltaRAndAProduct[index];
             }
 
-            for (int index = 0; index <= i_iterationCounter - 1; index++)
+            for (int index = 0; index <= i_iterationCounter; index++)
             {
-                g[i_iterationCounter] += r[index] * a_predictionCoefs[index];
+                g[i_iterationCounter + 1] += r[index] * a_predictionCoefs[index];
             }
         }
 
