@@ -18,7 +18,7 @@ namespace FastBurgAlgorithmLibrary
         /// </summary>
         private double[] deltaRAndAProduct;
 
-        public double[] a_predictionCoefs { get; set; }
+        private double[] a_predictionCoefs { get; set; }
 
         public FastBurgPrediction(float[] inputSignal)
         {
