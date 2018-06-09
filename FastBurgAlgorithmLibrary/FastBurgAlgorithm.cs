@@ -2,7 +2,10 @@
 
 namespace FastBurgAlgorithmLibrary
 {
-    public class FastBurgPrediction
+    /// <summary>
+    /// Implimentation of fast Burg algorithm
+    /// </summary>
+    public class FastBurgAlgorithm
     {
         private int absolutePosition;
         private int i_iterationCounter;
@@ -18,9 +21,9 @@ namespace FastBurgAlgorithmLibrary
         /// </summary>
         private double[] deltaRAndAProduct;
 
-        private double[] a_predictionCoefs { get; set; }
+        private double[] a_predictionCoefs;
 
-        public FastBurgPrediction(float[] inputSignal)
+        public FastBurgAlgorithm(float[] inputSignal)
         {
             x_inputSignal = inputSignal;
         }

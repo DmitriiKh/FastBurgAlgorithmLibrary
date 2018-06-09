@@ -4,7 +4,7 @@ using FastBurgAlgorithmLibrary;
 namespace FastBurgAlgorithmLibraryUnitTests
 {
     [TestFixture]
-    public class FastBurgPredictionTests
+    public class FastBurgAlgorithmUnitTests
     {
         [Test]
         public void GetForwardPrediction_SinInput_ReturnsCorrectPrediction()
@@ -26,7 +26,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 index < historyLength + numberOfSamplesToCheck;
                 index++)
             {
-                FastBurgPrediction fbp = new FastBurgPrediction(input_audio);
+                FastBurgAlgorithm fbp = new FastBurgAlgorithm(input_audio);
                 fbp.Train(index, coefNumber, historyLength);
                 var forwardPrediction = fbp.GetForwardPrediction();
 
