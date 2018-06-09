@@ -40,6 +40,8 @@ namespace FastBurgAlgorithmLibrary
             int coefficientsNumber,
             int historyLengthSamples)
         {
+            absolutePosition = position;
+
             while (i_iterationCounter < m_coefficientsNumber)
             {
                 Initialization(position, coefficientsNumber, historyLengthSamples);
