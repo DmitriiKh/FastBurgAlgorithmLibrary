@@ -49,7 +49,7 @@ namespace FastBurgAlgorithmLibrary
 
             Initialization();
 
-            while (i_iterationCounter < m_coefficientsNumber)
+            while (i_iterationCounter <= m_coefficientsNumber)
             {
                 ComputeReflectionCoefs();
 
@@ -166,7 +166,7 @@ namespace FastBurgAlgorithmLibrary
 
         private void Initialization()
         {
-            c = FindAutocorrelation();
+            FindAutocorrelation();
 
             i_iterationCounter = 0;
             a_predictionCoefs[0] = 1;
@@ -178,18 +178,16 @@ namespace FastBurgAlgorithmLibrary
             r[0] = 2 * c[1];
         }
 
-        private double[] FindAutocorrelation()
+        private void FindAutocorrelation()
         {
-            double[] c = new double[m_coefficientsNumber + 1];
-
             for (int j = 0; j <= m_coefficientsNumber; j++)
             {
                 c[j] = 0;
-                for (int index = absolutePosition - N_historyLengthSamples; index <= N_historyLengthSamples - 1 - j; index++)
+                for (int index = absolutePosition - N_historyLengthSamples; 
+                    index <= N_historyLengthSamples - 1 - j; 
+                    index++)
                     c[j] += x_inputSignal[index] * x_inputSignal[index + j];
             }
-
-            return c;
         }
     }
 }
