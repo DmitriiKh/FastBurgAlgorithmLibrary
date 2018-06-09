@@ -26,9 +26,9 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 index < historyLength + numberOfSamplesToCheck;
                 index++)
             {
-                FastBurgAlgorithm fbp = new FastBurgAlgorithm(input_audio);
-                fbp.Train(index, coefNumber, historyLength);
-                var forwardPrediction = fbp.GetForwardPrediction();
+                FastBurgAlgorithm fba = new FastBurgAlgorithm(input_audio);
+                fba.Train(index, coefNumber, historyLength);
+                var forwardPrediction = fba.GetForwardPrediction();
 
                 Assert.AreEqual(
                     input_audio[index],
