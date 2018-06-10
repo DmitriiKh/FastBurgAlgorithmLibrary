@@ -51,7 +51,7 @@ namespace FastBurgAlgorithmLibrary
 
             while (i_iterationCounter <= m_coefficientsNumber)
             {
-                ComputeReflectionCoefs();
+                ComputeReflectionCoef();
 
                 UpdatePredictionCoefs();
 
@@ -86,7 +86,7 @@ namespace FastBurgAlgorithmLibrary
             {
                 g[index] = 
                     g[index] + 
-                    k_reflectionCoefs[index] * g[J_inversOrder(index)] + 
+                    k_reflectionCoefs[i_iterationCounter - 1/*index*/] * g[J_inversOrder(index, i_iterationCounter + 1)] + 
                     deltaRAndAProduct[index];
             }
 
@@ -132,10 +132,10 @@ namespace FastBurgAlgorithmLibrary
                     x_inputSignal[absolutePosition - N_historyLengthSamples + index] *
                     x_inputSignal[absolutePosition - N_historyLengthSamples + i_iterationCounter] -
                     x_inputSignal[absolutePosition - 1 - index] *
-                    x_inputSignal[i_iterationCounter];
+                    x_inputSignal[absolutePosition - 1 - i_iterationCounter];
             }
             // updating r[0] after r[1:i_iterationCounter] are done
-            r[0] = 2 * c[i_iterationCounter + 1];
+            r[0] = 2 * c[i_iterationCounter];
         }
 
         private void UpdatePredictionCoefs()
@@ -144,32 +144,39 @@ namespace FastBurgAlgorithmLibrary
             {
                 a_predictionCoefs[index] = a_predictionCoefs[index] + 
                     k_reflectionCoefs[i_iterationCounter] * 
-                    a_predictionCoefs[J_inversOrder(index)];
+                    a_predictionCoefs[J_inversOrder(index, i_iterationCounter + 1)];
             }
         }
 
-        private void ComputeReflectionCoefs()
+        private void ComputeReflectionCoef()
         {
-            double numerator = 0;
+            double nominator = 0;
             double denominator = 0;
-            // for real numbers input signals
+
             for (int index = 0; index <= i_iterationCounter + 1; index++)
             {
-                numerator += a_predictionCoefs[index] * g[J_inversOrder(index)];
+                nominator += a_predictionCoefs[index] * 
+                    g[J_inversOrder(index, i_iterationCounter + 1)];
                 denominator += a_predictionCoefs[index] * g[index];
             }
 
-            k_reflectionCoefs[i_iterationCounter] = - numerator / denominator;
+            k_reflectionCoefs[i_iterationCounter] = - nominator / denominator;
         }
 
-        private int J_inversOrder(int index)
+        /// <summary>
+        /// Inverts index to flip a vector 
+        /// </summary>
+        /// <param name="index">from 0 to max</param>
+        /// <param name="max">from 0</param>
+        /// <returns></returns>
+        private int J_inversOrder(int index, int max)
         {
-            return i_iterationCounter + 1 - index;
+            return max - index;
         }
 
         private void Initialization()
         {
-            FindAutocorrelation();
+            FindAutocorrelations();
 
             i_iterationCounter = 0;
             a_predictionCoefs[0] = 1;
@@ -181,13 +188,13 @@ namespace FastBurgAlgorithmLibrary
             r[0] = 2 * c[1];
         }
 
-        private void FindAutocorrelation()
+        private void FindAutocorrelations()
         {
             for (int j = 0; j <= m_coefficientsNumber; j++)
             {
                 c[j] = 0;
                 for (int index = absolutePosition - N_historyLengthSamples; 
-                    index <= N_historyLengthSamples - 1 - j; 
+                    index <= absolutePosition - 1 - j; 
                     index++)
                     c[j] += x_inputSignal[index] * x_inputSignal[index + j];
             }

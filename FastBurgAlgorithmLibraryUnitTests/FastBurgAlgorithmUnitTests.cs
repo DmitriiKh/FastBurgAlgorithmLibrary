@@ -19,14 +19,15 @@ namespace FastBurgAlgorithmLibraryUnitTests
             for (int i = 0; i < input_audio.Length; i++)
             {
                 input_audio[i] = (float)System.Math.Sin(
-                    2 * System.Math.PI * i / (historyLength / 5.2));
+                    2 * System.Math.PI * i / (historyLength / 15));
             }
+
+            FastBurgAlgorithm fba = new FastBurgAlgorithm(input_audio);
 
             for (int index = historyLength;
                 index < historyLength + numberOfSamplesToCheck;
                 index++)
             {
-                FastBurgAlgorithm fba = new FastBurgAlgorithm(input_audio);
                 fba.Train(index, coefNumber, historyLength);
                 var forwardPrediction = fba.GetForwardPrediction();
 
