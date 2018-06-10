@@ -115,7 +115,8 @@ namespace FastBurgAlgorithmLibrary
                             i_iterationCounter - indexColumn] * 
                         a_predictionCoefs[indexColumn];
                     innerProduct2 += 
-                        x_inputSignal[absolutePosition - 1 - indexColumn] * 
+                        x_inputSignal[absolutePosition - 1 - 
+                            i_iterationCounter + indexColumn] * 
                         a_predictionCoefs[indexColumn];
                 }
 
@@ -123,7 +124,8 @@ namespace FastBurgAlgorithmLibrary
                     -x_inputSignal[absolutePosition - N_historyLengthSamples + 
                         i_iterationCounter - indexRow] *
                     innerProduct1 -
-                    x_inputSignal[absolutePosition - 1 - indexRow] * 
+                    x_inputSignal[absolutePosition - 1 - 
+                        i_iterationCounter + indexRow] * 
                     innerProduct2;
             }
         }
