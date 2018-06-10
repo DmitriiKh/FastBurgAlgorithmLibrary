@@ -41,7 +41,7 @@ namespace FastBurgAlgorithmLibrary
             m_coefficientsNumber = coefficientsNumber;
             N_historyLengthSamples = historyLengthSamples;
             a_predictionCoefs = new double[m_coefficientsNumber + 1];
-            g = new double[m_coefficientsNumber + 1];
+            g = new double[m_coefficientsNumber + 2];
             r = new double[m_coefficientsNumber + 1];
             c = new double[m_coefficientsNumber + 1];
             k_reflectionCoefs = new double[m_coefficientsNumber + 1];
@@ -81,18 +81,22 @@ namespace FastBurgAlgorithmLibrary
 
         private void UpdateG()
         {
+            double[] old_g = new double[g.Length];
+            for (int index = 0; index < g.Length; index++)
+                old_g[index] = g[index];
+
             // g.Length is i_iterationCounter + 1
-            for (int index = 0; index <= i_iterationCounter; index++)
+            for (int index = 0; index <= i_iterationCounter /*+ 1*/; index++)
             {
                 g[index] = 
-                    g[index] + 
-                    k_reflectionCoefs[i_iterationCounter - 1/*index*/] * g[J_inversOrder(index, i_iterationCounter + 1)] + 
+                    old_g[index] + 
+                    k_reflectionCoefs[i_iterationCounter - 1/*index*/] * old_g[J_inversOrder(index, i_iterationCounter/* + 1*/)] + 
                     deltaRAndAProduct[index];
             }
 
             for (int index = 0; index <= i_iterationCounter; index++)
             {
-                g[i_iterationCounter + 1] += r[index] * a_predictionCoefs[index];
+                g[i_iterationCounter + 1/*2*/] += r[index] * a_predictionCoefs[index];
             }
         }
 
@@ -126,25 +130,33 @@ namespace FastBurgAlgorithmLibrary
 
         private void UpdateR()
         {
+            double[] old_r = new double[r.Length];
+            for (int index = 0; index < r.Length; index++)
+                old_r[index] = r[index];
+
             for (int index = 0; index <= i_iterationCounter - 1; index++)
             {
-                r[index + 1] = r[index] -
+                r[index + 1] = old_r[index] -
                     x_inputSignal[absolutePosition - N_historyLengthSamples + index] *
                     x_inputSignal[absolutePosition - N_historyLengthSamples + i_iterationCounter] -
                     x_inputSignal[absolutePosition - 1 - index] *
                     x_inputSignal[absolutePosition - 1 - i_iterationCounter];
             }
             // updating r[0] after r[1:i_iterationCounter] are done
-            r[0] = 2 * c[i_iterationCounter];
+            r[0] = 2 * c[i_iterationCounter + 1];
         }
 
         private void UpdatePredictionCoefs()
         {
+            double[] old_a_predictionCoefs = new double[a_predictionCoefs.Length];
+            for (int index = 0; index < a_predictionCoefs.Length; index++)
+                old_a_predictionCoefs[index] = a_predictionCoefs[index];
+
             for (int index = 0; index <= i_iterationCounter + 1; index++)
             {
-                a_predictionCoefs[index] = a_predictionCoefs[index] + 
+                a_predictionCoefs[index] = old_a_predictionCoefs[index] + 
                     k_reflectionCoefs[i_iterationCounter] * 
-                    a_predictionCoefs[J_inversOrder(index, i_iterationCounter + 1)];
+                    old_a_predictionCoefs[J_inversOrder(index, i_iterationCounter + 1)];
             }
         }
 
