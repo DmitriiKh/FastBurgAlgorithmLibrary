@@ -81,9 +81,7 @@ namespace FastBurgAlgorithmLibrary
 
         private void UpdateG()
         {
-            double[] old_g = new double[g.Length];
-            for (int index = 0; index < g.Length; index++)
-                old_g[index] = g[index];
+            double[] old_g = (double[])g.Clone();
 
             // g.Length is i_iterationCounter + 1
             for (int index = 0; index <= i_iterationCounter /*+ 1*/; index++)
@@ -132,9 +130,7 @@ namespace FastBurgAlgorithmLibrary
 
         private void UpdateR()
         {
-            double[] old_r = new double[r.Length];
-            for (int index = 0; index < r.Length; index++)
-                old_r[index] = r[index];
+            double[] old_r = (double[])r.Clone();
 
             for (int index = 0; index <= i_iterationCounter - 1; index++)
             {
@@ -150,9 +146,7 @@ namespace FastBurgAlgorithmLibrary
 
         private void UpdatePredictionCoefs()
         {
-            double[] old_a_predictionCoefs = new double[a_predictionCoefs.Length];
-            for (int index = 0; index < a_predictionCoefs.Length; index++)
-                old_a_predictionCoefs[index] = a_predictionCoefs[index];
+            double[] old_a_predictionCoefs = (double[])a_predictionCoefs.Clone();
 
             for (int index = 0; index <= i_iterationCounter + 1; index++)
             {
