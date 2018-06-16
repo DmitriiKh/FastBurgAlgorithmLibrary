@@ -6,20 +6,20 @@ Master branch unit tests
 
 
 # Using:
-```
-double[] input_audio = new double[2048]; 
+```csharp
+double[] input = new double[2048]; 
     
 // for this example we create sinusoid as input signal
-for (int i = 0; i < input_audio.Length; i++)
+for (int i = 0; i < input.Length; i++)
 {
-    input_audio[i] = System.Math.Sin( 
-        2 * System.Math.PI * i / (historyLength / 5.2));
+    input[i] = System.Math.Sin( 
+        2 * System.Math.PI * i / (512 / 5.2));
 }
 
 int position = 1234;
 
 // Connect FastBurgAlgorithm instance to input signal
-FastBurgAlgorithm fba = new FastBurgAlgorithm(input_audio);
+FastBurgAlgorithm fba = new FastBurgAlgorithm(input);
 // Train FastBurgAlgorithm at position 1234 with 
 // 4 coefficients using 512 previous samples
 fba.Train(position, 4, 512);
