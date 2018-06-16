@@ -69,7 +69,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
             Assert.AreEqual(
                 1,
                 (double)predictionCoefs[0],
-                0.0000001);
+                0.00001);
 
             Assert.AreEqual(
                 -3.991510267867756,
@@ -96,7 +96,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
             Assert.AreEqual(
                 -0.9979213453536945,
                 (double)reflectionCoefs[0],
-                0.0000001);
+                0.000001);
 
             Assert.AreEqual(
                 0.9999990984096440,
