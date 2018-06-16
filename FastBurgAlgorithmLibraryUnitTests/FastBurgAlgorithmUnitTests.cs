@@ -13,12 +13,12 @@ namespace FastBurgAlgorithmLibraryUnitTests
             const int historyLength = 512;
             const int numberOfSamplesToCheck = 10;
 
-            float[] input_audio =
-                new float[historyLength + numberOfSamplesToCheck];
+            double[] input_audio = // float
+                new double[historyLength + numberOfSamplesToCheck]; // float
 
             for (int i = 0; i < input_audio.Length; i++)
             {
-                input_audio[i] = (float)System.Math.Sin(
+                input_audio[i] = System.Math.Sin( // float
                     2 * System.Math.PI * i / (historyLength / 5.2));
             }
 
