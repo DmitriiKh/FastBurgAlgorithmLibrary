@@ -4,7 +4,8 @@ namespace FastBurgAlgorithmLibrary
 {
     /// <summary>
     /// Fast implimentation of Burg algorithm for real signals.
-    /// For details see paper A Fast Implementation of Burg’s Method by Koen Vos
+    /// For details see paper A Fast Implementation of Burg’s Method by Koen Vos.
+    /// FastBurgAlgorithm64 uses internal variables of type double
     /// </summary>
     public class FastBurgAlgorithm64
     {
