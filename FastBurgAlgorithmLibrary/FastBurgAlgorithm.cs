@@ -3,11 +3,19 @@
 namespace FastBurgAlgorithmLibrary
 {
     /// <summary>
-    /// Implimentation of fast Burg algorithm
+    /// Fast implimentation of Burg algorithm for real signals.
+    /// For details see paper A Fast Implementation of Burg’s Method by Koen Vos
     /// </summary>
     public class FastBurgAlgorithm
     {
+        /// <summary>
+        /// Position in x_inputSignal that we need prediction for. 
+        /// </summary>
         private int absolutePosition;
+
+        // Naming: 
+        // - first letter is the same as in the Koen Vos paper
+        // - the part after underscore is my description
         private int i_iterationCounter;
         private int m_coefficientsNumber;
         private int N_historyLengthSamples;
@@ -16,6 +24,7 @@ namespace FastBurgAlgorithmLibrary
         private double[] r;
         private double[] c;
         private double[] k_reflectionCoefs;
+
         /// <summary>
         /// Product of deltaR matrix and a_predictionCoefs
         /// </summary>
@@ -29,9 +38,15 @@ namespace FastBurgAlgorithmLibrary
         }
 
         /// <summary>
-        /// Calculates one prediction error value for one sample using CPU
-        /// For details please see "vos_fastburg.pdf"
+        /// Calculates prediction coefficients for one sample using CPU
         /// </summary>
+        /// <param name="position"> Position in inputSignal that we need 
+        /// prediction for. Must be greater than historyLengthSamples </param>
+        /// <param name="coefficientsNumber"> Number of prediction coefficients
+        /// that will be calculated. Greater number gives more accurate 
+        /// prediction but takes more time to calculate </param>
+        /// <param name="historyLengthSamples"> Number of samples that will 
+        /// be used to calculate prediction coefficients </param>
         public void Train(
             int position,
             int coefficientsNumber,
@@ -67,6 +82,11 @@ namespace FastBurgAlgorithmLibrary
             }
         }
 
+        /// <summary>
+        /// Returns forward prediction based on prediction coefficients that were
+        /// previously calculated with Train() method
+        /// </summary>
+        /// <returns></returns>
         public float GetForwardPrediction()
         {
             double prediction = 0;
@@ -79,6 +99,10 @@ namespace FastBurgAlgorithmLibrary
             return (float)prediction;
         }
 
+        /// <summary>
+        /// Updates vector g. For details see step 7 of algorithm on page 3 of 
+        /// A Fast Implementation of Burg’s Method by Koen Vos
+        /// </summary>
         private void UpdateG()
         {
             double[] old_g = (double[])g.Clone();
@@ -98,6 +122,10 @@ namespace FastBurgAlgorithmLibrary
             }
         }
 
+        /// <summary>
+        /// Calculates vector deltaRAndAProduct. For details see step 6 of algorithm on page 3 of 
+        /// A Fast Implementation of Burg’s Method by Koen Vos
+        /// </summary>
         private void ComputeDeltaRMultByA()
         {
             for (int indexRow = 0; indexRow <= i_iterationCounter; indexRow++)
@@ -128,6 +156,10 @@ namespace FastBurgAlgorithmLibrary
             }
         }
 
+        /// <summary>
+        /// Updates vector r. For details see step 5 of algorithm on page 3 of 
+        /// A Fast Implementation of Burg’s Method by Koen Vos
+        /// </summary>
         private void UpdateR()
         {
             double[] old_r = (double[])r.Clone();
@@ -140,10 +172,14 @@ namespace FastBurgAlgorithmLibrary
                     x_inputSignal[absolutePosition - 1 - index] *
                     x_inputSignal[absolutePosition - 1 - i_iterationCounter];
             }
-            // updating r[0] after r[1:i_iterationCounter] are done
+            
             r[0] = 2 * c[i_iterationCounter + 1];
         }
 
+        /// <summary>
+        /// Updates vector of prediction coefficients. For details see step 2 of
+        /// algorithm on page 3 of A Fast Implementation of Burg’s Method by Koen Vos
+        /// </summary>
         private void UpdatePredictionCoefs()
         {
             double[] old_a_predictionCoefs = (double[])a_predictionCoefs.Clone();
@@ -156,6 +192,10 @@ namespace FastBurgAlgorithmLibrary
             }
         }
 
+        /// <summary>
+        /// Computes vector of reflection coefficients. For details see step 1
+        /// of algorithm on page 3 of A Fast Implementation of Burg’s Method by Koen Vos
+        /// </summary>
         private void ComputeReflectionCoef()
         {
             double nominator = 0;
@@ -172,16 +212,23 @@ namespace FastBurgAlgorithmLibrary
         }
 
         /// <summary>
-        /// Inverts index to flip a vector 
+        /// Inverts index to flip a vector insted of multiplication with J matrix.
+        /// For details see (12) on page 2 of 
+        /// A Fast Implementation of Burg’s Method by Koen Vos
         /// </summary>
         /// <param name="index">from 0 to max</param>
-        /// <param name="max">from 0</param>
+        /// <param name="max">positive number</param>
         /// <returns></returns>
         private int J_inversOrder(int index, int max)
         {
             return max - index;
         }
 
+        /// <summary>
+        /// Initializes i_iterationCounter and vectors. For details see step 0 of
+        /// algorithm on page 3 of 
+        /// A Fast Implementation of Burg’s Method by Koen Vos
+        /// </summary>
         private void Initialization()
         {
             FindAutocorrelations();
@@ -192,10 +239,15 @@ namespace FastBurgAlgorithmLibrary
                 Math.Pow(Math.Abs(x_inputSignal[absolutePosition - N_historyLengthSamples]), 2) -
                 Math.Pow(Math.Abs(x_inputSignal[absolutePosition - 1]), 2);
             g[1] = 2 * c[1];
-            // the paper says r[1], error?
+            // the paper says r[1], error in paper?
             r[0] = 2 * c[1];
         }
 
+        /// <summary>
+        /// Calculates autocorrelations. For details see step 0 of
+        /// algorithm on page 3 of 
+        /// A Fast Implementation of Burg’s Method by Koen Vos
+        /// </summary>
         private void FindAutocorrelations()
         {
             for (int j = 0; j <= m_coefficientsNumber; j++)
