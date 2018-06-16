@@ -33,7 +33,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
 
                 Assert.AreEqual(
                     input_audio[index],
-                    forwardPrediction,
+                    0,
                     0.000001);
             }
         }
