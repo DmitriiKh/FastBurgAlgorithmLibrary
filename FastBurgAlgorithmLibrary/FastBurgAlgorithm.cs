@@ -19,7 +19,7 @@ namespace FastBurgAlgorithmLibrary
         private int i_iterationCounter;
         private int m_coefficientsNumber;
         private int N_historyLengthSamples;
-        private readonly double[] x_inputSignal; // float
+        private readonly double[] x_inputSignal; 
         private decimal[] g;
         private decimal[] r;
         private decimal[] c;
@@ -32,7 +32,7 @@ namespace FastBurgAlgorithmLibrary
 
         private decimal[] a_predictionCoefs;
 
-        public FastBurgAlgorithm(double[] inputSignal) // float
+        public FastBurgAlgorithm(double[] inputSignal) 
         {
             x_inputSignal = inputSignal;
         }
@@ -87,7 +87,7 @@ namespace FastBurgAlgorithmLibrary
         /// previously calculated with Train() method
         /// </summary>
         /// <returns></returns>
-        public double GetForwardPrediction() //float
+        public double GetForwardPrediction() 
         {
             double prediction = 0;
             for (int index = 1; index <= a_predictionCoefs.Length - 1; index++)
@@ -96,7 +96,7 @@ namespace FastBurgAlgorithmLibrary
                     x_inputSignal[absolutePosition - index];
             }
 
-            return prediction; // float
+            return prediction; 
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace FastBurgAlgorithmLibrary
             {
                 g[index] = 
                     old_g[index] + 
-                    k_reflectionCoefs[i_iterationCounter - 1/*index*/] * old_g[J_inversOrder(index, i_iterationCounter)] + 
+                    k_reflectionCoefs[i_iterationCounter - 1] * old_g[J_inversOrder(index, i_iterationCounter)] + 
                     deltaRAndAProduct[index];
             }
 
