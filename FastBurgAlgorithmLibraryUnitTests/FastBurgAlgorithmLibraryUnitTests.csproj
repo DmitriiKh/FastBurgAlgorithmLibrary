@@ -47,7 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FastBurgAlgorithmUnitTests.cs" />
+    <Compile Include="FastBurgAlgorithm64UnitTests.cs" />
+    <Compile Include="FastBurgAlgorithm128UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

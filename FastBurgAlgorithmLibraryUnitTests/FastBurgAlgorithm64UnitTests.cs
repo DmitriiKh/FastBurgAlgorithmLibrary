@@ -4,7 +4,7 @@ using FastBurgAlgorithmLibrary;
 namespace FastBurgAlgorithmLibraryUnitTests
 {
     [TestFixture]
-    public class FastBurgAlgorithmUnitTests
+    public class FastBurgAlgorithm64UnitTests
     {
         [Test]
         public void GetForwardPrediction_SinInput_ReturnsCorrectPrediction()
@@ -22,7 +22,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                     2 * System.Math.PI * i / (historyLength / 5.2));
             }
 
-            FastBurgAlgorithm fba = new FastBurgAlgorithm(input_audio);
+            FastBurgAlgorithm64 fba = new FastBurgAlgorithm64(input_audio);
 
             for (int index = historyLength;
                 index < historyLength + numberOfSamplesToCheck;
@@ -51,7 +51,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
             const int historyLength = 512;
             const int numberOfSamplesToCheck = 1;
 
-            const double accuracy = 0.0000000000001;
+            const double accuracy = 0.01;
 
             double[] input_audio = 
                 new double[historyLength + numberOfSamplesToCheck]; 
@@ -62,57 +62,57 @@ namespace FastBurgAlgorithmLibraryUnitTests
                     2 * System.Math.PI * i / (historyLength / 5.2));
             }
 
-            FastBurgAlgorithm fba = new FastBurgAlgorithm(input_audio);
+            FastBurgAlgorithm64 fba = new FastBurgAlgorithm64(input_audio);
 
             fba.Train(historyLength, coefNumber, historyLength);
 
-            decimal[] predictionCoefs = fba.GetPredictionCoefs();
+            double[] predictionCoefs = fba.GetPredictionCoefs();
 
             Assert.AreEqual(
                 1,
-                (double)predictionCoefs[0],
+                predictionCoefs[0],
                 accuracy);
 
             Assert.AreEqual(
                 -3.991510267867756,
-                (double)predictionCoefs[1],
+                predictionCoefs[1],
                 accuracy);
 
             Assert.AreEqual(
                 5.983035128379795,
-                (double)predictionCoefs[2],
+                predictionCoefs[2],
                 accuracy);
 
             Assert.AreEqual(
                 -3.991503459864878,
-                (double)predictionCoefs[3],
+                predictionCoefs[3],
                 accuracy);
 
             Assert.AreEqual(
                 0.9999965889050035,
-                (double)predictionCoefs[4],
+                predictionCoefs[4],
                 accuracy);
 
-            decimal[] reflectionCoefs = fba.GetReflectionCoefs();
+            double[] reflectionCoefs = fba.GetReflectionCoefs();
 
             Assert.AreEqual(
                 -0.9979213453536945,
-                (double)reflectionCoefs[0],
+                reflectionCoefs[0],
                 accuracy);
 
             Assert.AreEqual(
                 0.9999990984096440,
-                (double)reflectionCoefs[1],
+                reflectionCoefs[1],
                 accuracy);
 
             Assert.AreEqual(
                 -0.9978363901155060,
-                (double)reflectionCoefs[2],
+                reflectionCoefs[2],
                 accuracy);
 
             Assert.AreEqual(
                 0.9999965889050035,
-                (double)reflectionCoefs[3],
+                reflectionCoefs[3],
                 accuracy);
         }
     }

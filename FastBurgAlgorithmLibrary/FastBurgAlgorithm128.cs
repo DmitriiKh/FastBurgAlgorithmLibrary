@@ -6,7 +6,7 @@ namespace FastBurgAlgorithmLibrary
     /// Fast implimentation of Burg algorithm for real signals.
     /// For details see paper A Fast Implementation of Burg’s Method by Koen Vos
     /// </summary>
-    public class FastBurgAlgorithm
+    public class FastBurgAlgorithm128
     {
         /// <summary>
         /// Position in x_inputSignal that we need prediction for. 
@@ -32,7 +32,7 @@ namespace FastBurgAlgorithmLibrary
 
         private decimal[] a_predictionCoefs;
 
-        public FastBurgAlgorithm(double[] inputSignal) 
+        public FastBurgAlgorithm128(double[] inputSignal) 
         {
             x_inputSignal = inputSignal;
         }
