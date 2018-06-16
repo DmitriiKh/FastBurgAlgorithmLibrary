@@ -197,7 +197,7 @@ namespace FastBurgAlgorithmLibrary
                     (decimal)x_inputSignal[absolutePosition - 1 - i_iterationCounter];
             }
             
-            r[0] = 2 * (decimal) c[i_iterationCounter + 1];
+            r[0] = 2 * c[i_iterationCounter + 1];
         }
 
         /// <summary>
@@ -260,8 +260,10 @@ namespace FastBurgAlgorithmLibrary
             i_iterationCounter = 0;
             a_predictionCoefs[0] = 1;
             g[0] = 2 * c[0] -
-                (decimal)Math.Pow(Math.Abs(x_inputSignal[absolutePosition - N_historyLengthSamples]), 2) -
-                (decimal)Math.Pow(Math.Abs(x_inputSignal[absolutePosition - 1]), 2);
+                Math.Abs((decimal)x_inputSignal[absolutePosition - N_historyLengthSamples]) *
+                Math.Abs((decimal)x_inputSignal[absolutePosition - N_historyLengthSamples]) -
+                Math.Abs((decimal)x_inputSignal[absolutePosition - 1]) *
+                Math.Abs((decimal)x_inputSignal[absolutePosition - 1]);
             g[1] = 2 * c[1];
             // the paper says r[1], error in paper?
             r[0] = 2 * c[1];
