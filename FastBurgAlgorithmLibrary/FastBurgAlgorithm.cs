@@ -100,6 +100,30 @@ namespace FastBurgAlgorithmLibrary
         }
 
         /// <summary>
+        /// Returns prediction coefficients that were
+        /// previously calculated with Train() method
+        /// </summary>
+        /// <returns></returns>
+        public decimal[] GetPredictionCoefs()
+        {
+            decimal[] predictionCoefs = (decimal[])a_predictionCoefs.Clone();
+
+            return predictionCoefs;
+        }
+
+        /// <summary>
+        /// Returns prediction coefficients that were
+        /// previously calculated with Train() method
+        /// </summary>
+        /// <returns></returns>
+        public decimal[] GetReflectionCoefs()
+        {
+            decimal[] reflectionCoefs = (decimal[])k_reflectionCoefs.Clone();
+
+            return reflectionCoefs;
+        }
+
+        /// <summary>
         /// Updates vector g. For details see step 7 of algorithm on page 3 of 
         /// A Fast Implementation of Burg’s Method by Koen Vos
         /// </summary>
