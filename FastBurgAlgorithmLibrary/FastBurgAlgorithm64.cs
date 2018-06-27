@@ -12,30 +12,32 @@ namespace FastBurgAlgorithmLibrary
         /// <summary>
         /// Position in x_inputSignal that we need prediction for. 
         /// </summary>
-        private int absolutePosition;
+        private int _absolutePosition;
 
         // Naming: 
         // - first letter is the same as in the Koen Vos paper
         // - the part after underscore is my description
-        private int i_iterationCounter;
-        private int m_coefficientsNumber;
-        private int N_historyLengthSamples;
-        private readonly double[] x_inputSignal; 
-        private double[] g;
-        private double[] r;
-        private double[] c;
-        private double[] k_reflectionCoefs;
+        private int _iIterationCounter;
+        private int _mCoefficientsNumber;
+        private int _nHistoryLengthSamples;
+        private readonly double[] _xInputSignal; 
+        private double[] _g;
+        private double[] _r;
+        private double[] _c;
+        private double[] _kReflectionCoefs;
 
         /// <summary>
         /// Product of deltaR matrix and a_predictionCoefs
         /// </summary>
-        private double[] deltaRAndAProduct;
+        private double[] _deltaRAndAProduct;
 
-        private double[] a_predictionCoefs;
+        private double[] _aPredictionCoefs;
+
+        public double[] C { get => _c; set => _c = value; }
 
         public FastBurgAlgorithm64(double[] inputSignal) 
         {
-            x_inputSignal = inputSignal;
+            _xInputSignal = inputSignal;
         }
 
         /// <summary>
@@ -53,26 +55,26 @@ namespace FastBurgAlgorithmLibrary
             int coefficientsNumber,
             int historyLengthSamples)
         {
-            absolutePosition = position;
-            m_coefficientsNumber = coefficientsNumber;
-            N_historyLengthSamples = historyLengthSamples;
-            a_predictionCoefs = new double[m_coefficientsNumber + 1];
-            g = new double[m_coefficientsNumber + 2];
-            r = new double[m_coefficientsNumber + 1];
-            c = new double[m_coefficientsNumber + 1];
-            k_reflectionCoefs = new double[m_coefficientsNumber + 1];
-            deltaRAndAProduct = new double[m_coefficientsNumber + 1];
+            _absolutePosition = position;
+            _mCoefficientsNumber = coefficientsNumber;
+            _nHistoryLengthSamples = historyLengthSamples;
+            _aPredictionCoefs = new double[_mCoefficientsNumber + 1];
+            _g = new double[_mCoefficientsNumber + 2];
+            _r = new double[_mCoefficientsNumber + 1];
+            C = new double[_mCoefficientsNumber + 1];
+            _kReflectionCoefs = new double[_mCoefficientsNumber + 1];
+            _deltaRAndAProduct = new double[_mCoefficientsNumber + 1];
 
             Initialization();
 
-            while (i_iterationCounter <= m_coefficientsNumber)
+            while (_iIterationCounter <= _mCoefficientsNumber)
             {
                 ComputeReflectionCoef();
 
                 UpdatePredictionCoefs();
 
-                i_iterationCounter++;
-                if (i_iterationCounter == m_coefficientsNumber)
+                _iIterationCounter++;
+                if (_iIterationCounter == _mCoefficientsNumber)
                     return;
 
                 UpdateR();
@@ -91,10 +93,10 @@ namespace FastBurgAlgorithmLibrary
         public double GetForwardPrediction() 
         {
             double prediction = 0;
-            for (int index = 1; index <= a_predictionCoefs.Length - 1; index++)
+            for (int index = 1; index <= _aPredictionCoefs.Length - 1; index++)
             {
-                prediction -= a_predictionCoefs[index] * 
-                    x_inputSignal[absolutePosition - index];
+                prediction -= _aPredictionCoefs[index] * 
+                    _xInputSignal[_absolutePosition - index];
             }
 
             return prediction; 
@@ -107,7 +109,7 @@ namespace FastBurgAlgorithmLibrary
         /// <returns></returns>
         public double[] GetPredictionCoefs()
         {
-            double[] predictionCoefs = (double[])a_predictionCoefs.Clone();
+            double[] predictionCoefs = (double[])_aPredictionCoefs.Clone();
 
             return predictionCoefs;
         }
@@ -119,7 +121,7 @@ namespace FastBurgAlgorithmLibrary
         /// <returns></returns>
         public double[] GetReflectionCoefs()
         {
-            double[] reflectionCoefs = (double[])k_reflectionCoefs.Clone();
+            double[] reflectionCoefs = (double[])_kReflectionCoefs.Clone();
 
             return reflectionCoefs;
         }
@@ -130,20 +132,20 @@ namespace FastBurgAlgorithmLibrary
         /// </summary>
         private void UpdateG()
         {
-            double[] old_g = (double[])g.Clone();
+            double[] oldG = (double[])_g.Clone();
 
             // g.Length is i_iterationCounter + 1
-            for (int index = 0; index <= i_iterationCounter; index++)
+            for (int index = 0; index <= _iIterationCounter; index++)
             {
-                g[index] = 
-                    old_g[index] + 
-                    k_reflectionCoefs[i_iterationCounter - 1] * old_g[J_inversOrder(index, i_iterationCounter)] + 
-                    deltaRAndAProduct[index];
+                _g[index] = 
+                    oldG[index] + 
+                    _kReflectionCoefs[_iIterationCounter - 1] * oldG[J_inversOrder(index, _iIterationCounter)] + 
+                    _deltaRAndAProduct[index];
             }
 
-            for (int index = 0; index <= i_iterationCounter; index++)
+            for (int index = 0; index <= _iIterationCounter; index++)
             {
-                g[i_iterationCounter + 1] += r[index] * a_predictionCoefs[index];
+                _g[_iIterationCounter + 1] += _r[index] * _aPredictionCoefs[index];
             }
         }
 
@@ -153,30 +155,30 @@ namespace FastBurgAlgorithmLibrary
         /// </summary>
         private void ComputeDeltaRMultByA()
         {
-            for (int indexRow = 0; indexRow <= i_iterationCounter; indexRow++)
+            for (int indexRow = 0; indexRow <= _iIterationCounter; indexRow++)
             {
                 double innerProduct1 = 0;
                 double innerProduct2 = 0;
                 for (int indexColumn = 0; 
-                    indexColumn <= i_iterationCounter; 
+                    indexColumn <= _iIterationCounter; 
                     indexColumn++)
                 {
                     innerProduct1 +=
-                         x_inputSignal[absolutePosition - N_historyLengthSamples +
-                            i_iterationCounter - indexColumn] * 
-                        a_predictionCoefs[indexColumn];
+                         _xInputSignal[_absolutePosition - _nHistoryLengthSamples +
+                            _iIterationCounter - indexColumn] * 
+                        _aPredictionCoefs[indexColumn];
                     innerProduct2 +=
-                         x_inputSignal[absolutePosition - 1 -
-                            i_iterationCounter + indexColumn] * 
-                        a_predictionCoefs[indexColumn];
+                         _xInputSignal[_absolutePosition - 1 -
+                            _iIterationCounter + indexColumn] * 
+                        _aPredictionCoefs[indexColumn];
                 }
 
-                deltaRAndAProduct[indexRow] =
-                    -x_inputSignal[absolutePosition - N_historyLengthSamples +
-                        i_iterationCounter - indexRow] *
+                _deltaRAndAProduct[indexRow] =
+                    -_xInputSignal[_absolutePosition - _nHistoryLengthSamples +
+                        _iIterationCounter - indexRow] *
                     innerProduct1 -
-                    x_inputSignal[absolutePosition - 1 -
-                        i_iterationCounter + indexRow] *
+                    _xInputSignal[_absolutePosition - 1 -
+                        _iIterationCounter + indexRow] *
                     innerProduct2;
             }
         }
@@ -187,18 +189,18 @@ namespace FastBurgAlgorithmLibrary
         /// </summary>
         private void UpdateR()
         {
-            double[] old_r = (double[])r.Clone();
+            double[] oldR = (double[])_r.Clone();
 
-            for (int index = 0; index <= i_iterationCounter - 1; index++)
+            for (int index = 0; index <= _iIterationCounter - 1; index++)
             {
-                r[index + 1] = old_r[index] -
-                    x_inputSignal[absolutePosition - N_historyLengthSamples + index] *
-                    x_inputSignal[absolutePosition - N_historyLengthSamples + i_iterationCounter] -
-                    x_inputSignal[absolutePosition - 1 - index] *
-                    x_inputSignal[absolutePosition - 1 - i_iterationCounter];
+                _r[index + 1] = oldR[index] -
+                    _xInputSignal[_absolutePosition - _nHistoryLengthSamples + index] *
+                    _xInputSignal[_absolutePosition - _nHistoryLengthSamples + _iIterationCounter] -
+                    _xInputSignal[_absolutePosition - 1 - index] *
+                    _xInputSignal[_absolutePosition - 1 - _iIterationCounter];
             }
             
-            r[0] = 2 * c[i_iterationCounter + 1];
+            _r[0] = 2 * C[_iIterationCounter + 1];
         }
 
         /// <summary>
@@ -207,13 +209,13 @@ namespace FastBurgAlgorithmLibrary
         /// </summary>
         private void UpdatePredictionCoefs()
         {
-            double[] old_a_predictionCoefs = (double[])a_predictionCoefs.Clone();
+            double[] oldAPredictionCoefs = (double[])_aPredictionCoefs.Clone();
 
-            for (int index = 0; index <= i_iterationCounter + 1; index++)
+            for (int index = 0; index <= _iIterationCounter + 1; index++)
             {
-                a_predictionCoefs[index] = old_a_predictionCoefs[index] + 
-                    k_reflectionCoefs[i_iterationCounter] * 
-                    old_a_predictionCoefs[J_inversOrder(index, i_iterationCounter + 1)];
+                _aPredictionCoefs[index] = oldAPredictionCoefs[index] + 
+                    _kReflectionCoefs[_iIterationCounter] * 
+                    oldAPredictionCoefs[J_inversOrder(index, _iIterationCounter + 1)];
             }
         }
 
@@ -226,14 +228,14 @@ namespace FastBurgAlgorithmLibrary
             double nominator = 0;
             double denominator = 0;
 
-            for (int index = 0; index <= i_iterationCounter + 1; index++)
+            for (int index = 0; index <= _iIterationCounter + 1; index++)
             {
-                nominator += a_predictionCoefs[index] * 
-                    g[J_inversOrder(index, i_iterationCounter + 1)];
-                denominator += a_predictionCoefs[index] * g[index];
+                nominator += _aPredictionCoefs[index] * 
+                    _g[J_inversOrder(index, _iIterationCounter + 1)];
+                denominator += _aPredictionCoefs[index] * _g[index];
             }
 
-            k_reflectionCoefs[i_iterationCounter] = - nominator / denominator;
+            _kReflectionCoefs[_iIterationCounter] = - nominator / denominator;
         }
 
         /// <summary>
@@ -258,16 +260,16 @@ namespace FastBurgAlgorithmLibrary
         {
             FindAutocorrelations();
 
-            i_iterationCounter = 0;
-            a_predictionCoefs[0] = 1;
-            g[0] = 2 * c[0] -
-                Math.Abs(x_inputSignal[absolutePosition - N_historyLengthSamples]) *
-                Math.Abs(x_inputSignal[absolutePosition - N_historyLengthSamples]) -
-                Math.Abs(x_inputSignal[absolutePosition - 1]) *
-                Math.Abs(x_inputSignal[absolutePosition - 1]);
-            g[1] = 2 * c[1];
+            _iIterationCounter = 0;
+            _aPredictionCoefs[0] = 1;
+            _g[0] = 2 * C[0] -
+                Math.Abs(_xInputSignal[_absolutePosition - _nHistoryLengthSamples]) *
+                Math.Abs(_xInputSignal[_absolutePosition - _nHistoryLengthSamples]) -
+                Math.Abs(_xInputSignal[_absolutePosition - 1]) *
+                Math.Abs(_xInputSignal[_absolutePosition - 1]);
+            _g[1] = 2 * C[1];
             // the paper says r[1], error in paper?
-            r[0] = 2 * c[1];
+            _r[0] = 2 * C[1];
         }
 
         /// <summary>
@@ -277,13 +279,13 @@ namespace FastBurgAlgorithmLibrary
         /// </summary>
         private void FindAutocorrelations()
         {
-            for (int j = 0; j <= m_coefficientsNumber; j++)
+            for (int j = 0; j <= _mCoefficientsNumber; j++)
             {
-                c[j] = 0;
-                for (int index = absolutePosition - N_historyLengthSamples; 
-                    index <= absolutePosition - 1 - j; 
+                C[j] = 0;
+                for (int index = _absolutePosition - _nHistoryLengthSamples; 
+                    index <= _absolutePosition - 1 - j; 
                     index++)
-                    c[j] += x_inputSignal[index] * x_inputSignal[index + j];
+                    C[j] += _xInputSignal[index] * _xInputSignal[index + j];
             }
         }
     }
