@@ -4,6 +4,9 @@ Implementation of Fast Burg Algorithm by Koen Vos for real signals (like audio o
 Master branch unit tests
 [![Build Status](https://travis-ci.org/DmitriiKh/FastBurgAlgorithmLibrary.svg?branch=master)]
 
+64&128bit branch unit tests
+[![Build Status](https://travis-ci.org/DmitriiKh/FastBurgAlgorithmLibrary.svg?branch=64%26128bit)](https://travis-ci.org/DmitriiKh/FastBurgAlgorithmLibrary)
+
 
 # Using:
 ```csharp
