@@ -40,9 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data.cs" />
+    <Compile Include="Data128.cs" />
+    <Compile Include="Data64.cs" />
     <Compile Include="FastBurgAlgorithm.cs" />
-    <Compile Include="FastBurgAlgorithm64.cs" />
-    <Compile Include="FastBurgAlgorithm128.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

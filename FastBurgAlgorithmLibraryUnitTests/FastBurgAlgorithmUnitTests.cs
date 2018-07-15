@@ -1,13 +1,16 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using FastBurgAlgorithmLibrary;
 
 namespace FastBurgAlgorithmLibraryUnitTests
 {
     [TestFixture]
-    public class FastBurgAlgorithm64UnitTests
+    public class FastBurgAlgorithmUnitTests
     {
         [Test]
-        public void GetForwardPrediction_SinInput_ReturnsCorrectPrediction()
+        [TestCase(64, 0.0000001)]
+        [TestCase(128, 0.0000001)]
+        public void GetForwardPrediction_SinInput_ReturnsCorrectPrediction(int precision, double accuracy)
         {
             const int coefNumber = 4;
             const int historyLength = 512;
@@ -22,22 +25,23 @@ namespace FastBurgAlgorithmLibraryUnitTests
                     2 * System.Math.PI * i / (historyLength / 5.2));
             }
 
-            FastBurgAlgorithm64 fba = new FastBurgAlgorithm64(input_audio);
+            FastBurgAlgorithm fba = new FastBurgAlgorithm(input_audio);
 
             for (int index = historyLength;
                 index < historyLength + numberOfSamplesToCheck;
                 index++)
             {
-                fba.Train(index, coefNumber, historyLength);
+                fba.Train(precision, index, coefNumber, historyLength);
                 var forwardPrediction = fba.GetForwardPrediction();
 
                 Assert.AreEqual(
                     input_audio[index],
                     forwardPrediction,
-                    0.0000001);
+                    accuracy);
             }
         }
 
+        /*
         [Test]
         public void Train_SinInput_ReturnsCorrectPredictionAndReflectionCoefficients()
         {
@@ -47,6 +51,8 @@ namespace FastBurgAlgorithmLibraryUnitTests
              * output_precision(16)
              * [a, v, k] = arburg(x(1:512),4)
              */
+
+        /*
             const int coefNumber = 4;
             const int historyLength = 512;
             const int numberOfSamplesToCheck = 1;
@@ -62,7 +68,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                     2 * System.Math.PI * i / (historyLength / 5.2));
             }
 
-            FastBurgAlgorithm64 fba = new FastBurgAlgorithm64(input_audio);
+            FastBurgAlgorithm fba = new FastBurgAlgorithm(input_audio, typeof(double));
 
             fba.Train(historyLength, coefNumber, historyLength);
 
@@ -114,6 +120,6 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 0.9999965889050035,
                 reflectionCoefs[3],
                 accuracy);
-        }
+        }*/
     }
 }
