@@ -8,13 +8,13 @@ namespace FastBurgAlgorithmLibraryUnitTests
     public class FastBurgAlgorithmUnitTests
     {
         [Test]
-        [TestCase(64, 0.0000001)]
+        [TestCase(64, 0.00001)]
         [TestCase(128, 0.0000001)]
         public void GetForwardPrediction_SinInput_ReturnsCorrectPrediction(int precision, double accuracy)
         {
             const int coefNumber = 4;
             const int historyLength = 512;
-            const int numberOfSamplesToCheck = 10;
+            const int numberOfSamplesToCheck = 10000;
 
             double[] input_audio = 
                 new double[historyLength + numberOfSamplesToCheck]; 
