@@ -115,5 +115,36 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 reflectionCoefs[3],
                 accuracy);
         }
+
+        [Test]
+        public void GetForwardPrediction_ZeroInput_ReturnsCorrectPrediction()
+        {
+            const int coefNumber = 4;
+            const int historyLength = 512;
+            const int numberOfSamplesToCheck = 10;
+
+            double[] inputAudio =
+                new double[historyLength + numberOfSamplesToCheck];
+
+            for (int i = 0; i < inputAudio.Length; i++)
+            {
+                inputAudio[i] = 0;
+            }
+
+            FastBurgAlgorithm64 fba = new FastBurgAlgorithm64(inputAudio);
+
+            for (int index = historyLength;
+                index < historyLength + numberOfSamplesToCheck;
+                index++)
+            {
+                fba.Train(index, coefNumber, historyLength);
+                var forwardPrediction = fba.GetForwardPrediction();
+
+                Assert.AreEqual(
+                    inputAudio[index],
+                    forwardPrediction,
+                    0.0000001);
+            }
+        }
     }
 }

@@ -224,7 +224,7 @@ namespace FastBurgAlgorithmLibrary
         private void ComputeReflectionCoef()
         {
             decimal nominator = 0;
-            decimal denominator = 0;
+            decimal denominator = 0.000000000000000000000000001M;
 
             for (int index = 0; index <= _iIterationCounter + 1; index++)
             {
