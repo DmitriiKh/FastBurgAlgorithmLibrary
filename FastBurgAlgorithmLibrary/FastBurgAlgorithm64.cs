@@ -226,7 +226,7 @@ namespace FastBurgAlgorithmLibrary
         private void ComputeReflectionCoef()
         {
             double nominator = 0;
-            double denominator = 0;
+            double denominator = Double.Epsilon;
 
             for (int index = 0; index <= _iIterationCounter + 1; index++)
             {
