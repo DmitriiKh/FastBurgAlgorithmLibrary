@@ -56,12 +56,8 @@ namespace FastBurgAlgorithmLibrary
             _absolutePosition = position;
             _mCoefficientsNumber = coefficientsNumber;
             _nHistoryLengthSamples = historyLengthSamples;
-            _aPredictionCoefs = new double[_mCoefficientsNumber + 1];
-            _g = new double[_mCoefficientsNumber + 2];
-            _r = new double[_mCoefficientsNumber + 1];
-            _c = new double[_mCoefficientsNumber + 1];
-            _kReflectionCoefs = new double[_mCoefficientsNumber + 1];
-            _deltaRAndAProduct = new double[_mCoefficientsNumber + 1];
+
+            CreateInternalVariables();
 
             Initialization();
 
@@ -81,6 +77,19 @@ namespace FastBurgAlgorithmLibrary
 
                 UpdateG();
             }
+        }
+
+        /// <summary>
+        /// Creates internal variables with desirable length
+        /// </summary>
+        private void CreateInternalVariables()
+        {
+            _aPredictionCoefs = new double[_mCoefficientsNumber + 1];
+            _g = new double[_mCoefficientsNumber + 2];
+            _r = new double[_mCoefficientsNumber + 1];
+            _c = new double[_mCoefficientsNumber + 1];
+            _kReflectionCoefs = new double[_mCoefficientsNumber + 1];
+            _deltaRAndAProduct = new double[_mCoefficientsNumber + 1];
         }
 
         /// <summary>
