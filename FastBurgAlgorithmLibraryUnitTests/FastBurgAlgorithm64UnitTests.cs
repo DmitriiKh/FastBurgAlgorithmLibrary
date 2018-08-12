@@ -1,5 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
 using FastBurgAlgorithmLibrary;
+using NUnit.Framework;
 
 namespace FastBurgAlgorithmLibraryUnitTests
 {
@@ -13,18 +14,44 @@ namespace FastBurgAlgorithmLibraryUnitTests
             const int historyLength = 512;
             const int numberOfSamplesToCheck = 10;
 
-            double[] inputAudio = 
-                new double[historyLength + numberOfSamplesToCheck]; 
+            var inputAudio =
+                new double[historyLength + numberOfSamplesToCheck];
 
-            for (int i = 0; i < inputAudio.Length; i++)
+            for (var i = 0; i < inputAudio.Length; i++)
+                inputAudio[i] = Math.Sin(
+                    2 * Math.PI * i / (historyLength / 5.2));
+
+            var fba = new FastBurgAlgorithm64(inputAudio);
+
+            for (var index = historyLength;
+                index < historyLength + numberOfSamplesToCheck;
+                index++)
             {
-                inputAudio[i] = System.Math.Sin( 
-                    2 * System.Math.PI * i / (historyLength / 5.2));
+                fba.Train(index, coefNumber, historyLength);
+                var forwardPrediction = fba.GetForwardPrediction();
+
+                Assert.AreEqual(
+                    inputAudio[index],
+                    forwardPrediction,
+                    0.0000001);
             }
+        }
 
-            FastBurgAlgorithm64 fba = new FastBurgAlgorithm64(inputAudio);
+        [Test]
+        public void GetForwardPrediction_ZeroInput_ReturnsCorrectPrediction()
+        {
+            const int coefNumber = 4;
+            const int historyLength = 512;
+            const int numberOfSamplesToCheck = 10;
 
-            for (int index = historyLength;
+            var inputAudio =
+                new double[historyLength + numberOfSamplesToCheck];
+
+            for (var i = 0; i < inputAudio.Length; i++) inputAudio[i] = 0;
+
+            var fba = new FastBurgAlgorithm64(inputAudio);
+
+            for (var index = historyLength;
                 index < historyLength + numberOfSamplesToCheck;
                 index++)
             {
@@ -53,20 +80,18 @@ namespace FastBurgAlgorithmLibraryUnitTests
 
             const double accuracy = 0.01;
 
-            double[] inputAudio = 
-                new double[historyLength + numberOfSamplesToCheck]; 
+            var inputAudio =
+                new double[historyLength + numberOfSamplesToCheck];
 
-            for (int i = 0; i < inputAudio.Length; i++)
-            {
-                inputAudio[i] = System.Math.Sin( 
-                    2 * System.Math.PI * i / (historyLength / 5.2));
-            }
+            for (var i = 0; i < inputAudio.Length; i++)
+                inputAudio[i] = Math.Sin(
+                    2 * Math.PI * i / (historyLength / 5.2));
 
-            FastBurgAlgorithm64 fba = new FastBurgAlgorithm64(inputAudio);
+            var fba = new FastBurgAlgorithm64(inputAudio);
 
             fba.Train(historyLength, coefNumber, historyLength);
 
-            double[] predictionCoefs = fba.GetPredictionCoefs();
+            var predictionCoefs = fba.GetPredictionCoefs();
 
             Assert.AreEqual(
                 1,
@@ -93,7 +118,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 predictionCoefs[4],
                 accuracy);
 
-            double[] reflectionCoefs = fba.GetReflectionCoefs();
+            var reflectionCoefs = fba.GetReflectionCoefs();
 
             Assert.AreEqual(
                 -0.9979213453536945,
@@ -114,37 +139,6 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 0.9999965889050035,
                 reflectionCoefs[3],
                 accuracy);
-        }
-
-        [Test]
-        public void GetForwardPrediction_ZeroInput_ReturnsCorrectPrediction()
-        {
-            const int coefNumber = 4;
-            const int historyLength = 512;
-            const int numberOfSamplesToCheck = 10;
-
-            double[] inputAudio =
-                new double[historyLength + numberOfSamplesToCheck];
-
-            for (int i = 0; i < inputAudio.Length; i++)
-            {
-                inputAudio[i] = 0;
-            }
-
-            FastBurgAlgorithm64 fba = new FastBurgAlgorithm64(inputAudio);
-
-            for (int index = historyLength;
-                index < historyLength + numberOfSamplesToCheck;
-                index++)
-            {
-                fba.Train(index, coefNumber, historyLength);
-                var forwardPrediction = fba.GetForwardPrediction();
-
-                Assert.AreEqual(
-                    inputAudio[index],
-                    forwardPrediction,
-                    0.0000001);
-            }
         }
     }
 }
