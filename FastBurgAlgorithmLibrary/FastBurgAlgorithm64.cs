@@ -33,8 +33,6 @@ namespace FastBurgAlgorithmLibrary
 
         private double[] _aPredictionCoefs;
 
-        public double[] C { get => _c; set => _c = value; }
-
         public FastBurgAlgorithm64(double[] inputSignal) 
         {
             _xInputSignal = inputSignal;
@@ -61,7 +59,7 @@ namespace FastBurgAlgorithmLibrary
             _aPredictionCoefs = new double[_mCoefficientsNumber + 1];
             _g = new double[_mCoefficientsNumber + 2];
             _r = new double[_mCoefficientsNumber + 1];
-            C = new double[_mCoefficientsNumber + 1];
+            _c = new double[_mCoefficientsNumber + 1];
             _kReflectionCoefs = new double[_mCoefficientsNumber + 1];
             _deltaRAndAProduct = new double[_mCoefficientsNumber + 1];
 
@@ -200,7 +198,7 @@ namespace FastBurgAlgorithmLibrary
                     _xInputSignal[_absolutePosition - 1 - _iIterationCounter];
             }
             
-            _r[0] = 2 * C[_iIterationCounter + 1];
+            _r[0] = 2 * _c[_iIterationCounter + 1];
         }
 
         /// <summary>
@@ -262,14 +260,14 @@ namespace FastBurgAlgorithmLibrary
 
             _iIterationCounter = 0;
             _aPredictionCoefs[0] = 1;
-            _g[0] = 2 * C[0] -
+            _g[0] = 2 * _c[0] -
                 Math.Abs(_xInputSignal[_absolutePosition - _nHistoryLengthSamples]) *
                 Math.Abs(_xInputSignal[_absolutePosition - _nHistoryLengthSamples]) -
                 Math.Abs(_xInputSignal[_absolutePosition - 1]) *
                 Math.Abs(_xInputSignal[_absolutePosition - 1]);
-            _g[1] = 2 * C[1];
+            _g[1] = 2 * _c[1];
             // the paper says r[1], error in paper?
-            _r[0] = 2 * C[1];
+            _r[0] = 2 * _c[1];
         }
 
         /// <summary>
@@ -281,11 +279,11 @@ namespace FastBurgAlgorithmLibrary
         {
             for (int j = 0; j <= _mCoefficientsNumber; j++)
             {
-                C[j] = 0;
+                _c[j] = 0;
                 for (int index = _absolutePosition - _nHistoryLengthSamples; 
                     index <= _absolutePosition - 1 - j; 
                     index++)
-                    C[j] += _xInputSignal[index] * _xInputSignal[index + j];
+                    _c[j] += _xInputSignal[index] * _xInputSignal[index + j];
             }
         }
     }
