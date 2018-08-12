@@ -66,6 +66,64 @@ namespace FastBurgAlgorithmLibraryUnitTests
         }
 
         [Test]
+        public void GetBackwardPrediction_SinInput_ReturnsCorrectPrediction()
+        {
+            const int coefNumber = 4;
+            const int historyLength = 512;
+            const int numberOfSamplesToCheck = 10;
+
+            var inputAudio =
+                new double[historyLength + numberOfSamplesToCheck];
+
+            for (var i = 0; i < inputAudio.Length; i++)
+                inputAudio[i] = Math.Sin(
+                    2 * Math.PI * i / (historyLength / 5.2));
+
+            var fba = new FastBurgAlgorithm128(inputAudio);
+
+            for (var index = historyLength + 1;
+                index < historyLength + numberOfSamplesToCheck;
+                index++)
+            {
+                fba.Train(index, coefNumber, historyLength);
+                var backwardPrediction = fba.GetBackwardPrediction();
+
+                Assert.AreEqual(
+                    inputAudio[index - historyLength - 1],
+                    backwardPrediction,
+                    0.0000001);
+            }
+        }
+
+        [Test]
+        public void GetBackwardPrediction_ZeroInput_ReturnsCorrectPrediction()
+        {
+            const int coefNumber = 4;
+            const int historyLength = 512;
+            const int numberOfSamplesToCheck = 10;
+
+            var inputAudio =
+                new double[historyLength + numberOfSamplesToCheck];
+
+            for (var i = 0; i < inputAudio.Length; i++) inputAudio[i] = 0;
+
+            var fba = new FastBurgAlgorithm128(inputAudio);
+
+            for (var index = historyLength + 1;
+                index < historyLength + numberOfSamplesToCheck;
+                index++)
+            {
+                fba.Train(index, coefNumber, historyLength);
+                var backwardPrediction = fba.GetBackwardPrediction();
+
+                Assert.AreEqual(
+                    inputAudio[index - historyLength - 1],
+                    backwardPrediction,
+                    0.0000001);
+            }
+        }
+
+        [Test]
         public void Train_SinInput_ReturnsCorrectPredictionAndReflectionCoefficients()
         {
             /* Coefficients for comparision are taken from GNU Octave arburg() function

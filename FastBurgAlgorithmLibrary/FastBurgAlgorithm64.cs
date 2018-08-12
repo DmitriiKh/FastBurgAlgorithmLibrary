@@ -126,7 +126,7 @@ namespace FastBurgAlgorithmLibrary
             for (var index = 1; index <= _aPredictionCoefs.Length - 1; index++)
                 prediction -= _aPredictionCoefs[index] *
                               _xInputSignal[_absolutePosition -
-                                            _nHistoryLengthSamples +
+                                            _nHistoryLengthSamples - 1 +
                                             index];
 
             return prediction;

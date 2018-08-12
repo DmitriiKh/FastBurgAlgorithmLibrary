@@ -120,13 +120,13 @@ namespace FastBurgAlgorithmLibrary
         ///     previously calculated with Train() method
         /// </summary>
         /// <returns></returns>
-        public decimal GetBackwardPrediction()
+        public double GetBackwardPrediction()
         {
-            decimal prediction = 0;
+            double prediction = 0;
             for (var index = 1; index <= _aPredictionCoefs.Length - 1; index++)
-                prediction -= _aPredictionCoefs[index] *
-                              (decimal) _xInputSignal[_absolutePosition -
-                                            _nHistoryLengthSamples +
+                prediction -= (double) _aPredictionCoefs[index] *
+                              _xInputSignal[_absolutePosition -
+                                            _nHistoryLengthSamples - 1 +
                                             index];
 
             return prediction;
