@@ -5,14 +5,14 @@ using NUnit.Framework;
 namespace FastBurgAlgorithmLibraryUnitTests
 {
     [TestFixture]
-    public class FastBurgAlgorithm128UnitTests
+    public class FastBurgAlgorithmDoubleUnitTests
     {
         [Test]
         public void GetForwardPrediction_SinInput_ReturnsCorrectPrediction()
         {
             const int coefNumber = 4;
             const int historyLength = 512;
-            const int numberOfSamplesToCheck = 10;
+            const int numberOfSamplesToCheck = 10000;
 
             var inputAudio =
                 new double[historyLength + numberOfSamplesToCheck];
@@ -21,7 +21,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 inputAudio[i] = Math.Sin(
                     2 * Math.PI * i / (historyLength / 5.2));
 
-            var fba = new FastBurgAlgorithm128(inputAudio);
+            var fba = new FastBurgAlgorithm<double>(inputAudio);
 
             for (var index = historyLength;
                 index < historyLength + numberOfSamplesToCheck;
@@ -33,7 +33,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 Assert.AreEqual(
                     inputAudio[index],
                     forwardPrediction,
-                    0.0000001);
+                    0.00001);
             }
         }
 
@@ -49,7 +49,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
 
             for (var i = 0; i < inputAudio.Length; i++) inputAudio[i] = 0;
 
-            var fba = new FastBurgAlgorithm128(inputAudio);
+            var fba = new FastBurgAlgorithm<double>(inputAudio);
 
             for (var index = historyLength;
                 index < historyLength + numberOfSamplesToCheck;
@@ -61,7 +61,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 Assert.AreEqual(
                     inputAudio[index],
                     forwardPrediction,
-                    0.0000001);
+                    0.000001);
             }
         }
 
@@ -79,7 +79,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 inputAudio[i] = Math.Sin(
                     2 * Math.PI * i / (historyLength / 5.2));
 
-            var fba = new FastBurgAlgorithm128(inputAudio);
+            var fba = new FastBurgAlgorithm<double>(inputAudio);
 
             for (var index = historyLength + 1;
                 index < historyLength + numberOfSamplesToCheck;
@@ -91,7 +91,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 Assert.AreEqual(
                     inputAudio[index - historyLength - 1],
                     backwardPrediction,
-                    0.0000001);
+                    0.000001);
             }
         }
 
@@ -107,7 +107,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
 
             for (var i = 0; i < inputAudio.Length; i++) inputAudio[i] = 0;
 
-            var fba = new FastBurgAlgorithm128(inputAudio);
+            var fba = new FastBurgAlgorithm<double>(inputAudio);
 
             for (var index = historyLength + 1;
                 index < historyLength + numberOfSamplesToCheck;
@@ -119,7 +119,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 Assert.AreEqual(
                     inputAudio[index - historyLength - 1],
                     backwardPrediction,
-                    0.0000001);
+                    0.000001);
             }
         }
 
@@ -136,7 +136,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
             const int historyLength = 512;
             const int numberOfSamplesToCheck = 1;
 
-            const double accuracy = 0.0000000000001;
+            const double accuracy = 0.01;
 
             var inputAudio =
                 new double[historyLength + numberOfSamplesToCheck];
@@ -145,7 +145,7 @@ namespace FastBurgAlgorithmLibraryUnitTests
                 inputAudio[i] = Math.Sin(
                     2 * Math.PI * i / (historyLength / 5.2));
 
-            var fba = new FastBurgAlgorithm128(inputAudio);
+            var fba = new FastBurgAlgorithm<double>(inputAudio);
 
             fba.Train(historyLength, coefNumber, historyLength);
 
@@ -153,49 +153,49 @@ namespace FastBurgAlgorithmLibraryUnitTests
 
             Assert.AreEqual(
                 1,
-                (double) predictionCoefs[0],
+                predictionCoefs[0],
                 accuracy);
 
             Assert.AreEqual(
                 -3.991510267867756,
-                (double) predictionCoefs[1],
+                predictionCoefs[1],
                 accuracy);
 
             Assert.AreEqual(
                 5.983035128379795,
-                (double) predictionCoefs[2],
+                predictionCoefs[2],
                 accuracy);
 
             Assert.AreEqual(
                 -3.991503459864878,
-                (double) predictionCoefs[3],
+                predictionCoefs[3],
                 accuracy);
 
             Assert.AreEqual(
                 0.9999965889050035,
-                (double) predictionCoefs[4],
+                predictionCoefs[4],
                 accuracy);
 
             var reflectionCoefs = fba.GetReflectionCoefs();
 
             Assert.AreEqual(
                 -0.9979213453536945,
-                (double) reflectionCoefs[0],
+                reflectionCoefs[0],
                 accuracy);
 
             Assert.AreEqual(
                 0.9999990984096440,
-                (double) reflectionCoefs[1],
+                reflectionCoefs[1],
                 accuracy);
 
             Assert.AreEqual(
                 -0.9978363901155060,
-                (double) reflectionCoefs[2],
+                reflectionCoefs[2],
                 accuracy);
 
             Assert.AreEqual(
                 0.9999965889050035,
-                (double) reflectionCoefs[3],
+                reflectionCoefs[3],
                 accuracy);
         }
     }
