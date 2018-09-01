@@ -4,9 +4,6 @@ Implementation of Fast Burg Algorithm by Koen Vos for real signals (like audio o
 Master branch unit tests
 [![Build Status](https://travis-ci.org/DmitriiKh/FastBurgAlgorithmLibrary.svg?branch=master)]
 
-64&128bit branch unit tests
-[![Build Status](https://travis-ci.org/DmitriiKh/FastBurgAlgorithmLibrary.svg?branch=64%26128bit)](https://travis-ci.org/DmitriiKh/FastBurgAlgorithmLibrary)
-
 # Two versions of class
 FastBurgAlgorithm128 uses internal variables of type decimal which gives accuracy.
 FastBurgAlgorithm64 uses internal variables of type double which gives speed.
@@ -29,6 +26,8 @@ FastBurgAlgorithm128 fba = new FastBurgAlgorithm128(input);
 // Train FastBurgAlgorithm at position 1234 with 
 // 4 coefficients using 512 previous samples
 fba.Train(position, 4, 512);
+// get prediction coefficients
+var predictionCoefs = fba.GetPredictionCoefs();
 // get prediction for sample at position 1234
 var forwardPrediction = fba.GetForwardPrediction();
 
