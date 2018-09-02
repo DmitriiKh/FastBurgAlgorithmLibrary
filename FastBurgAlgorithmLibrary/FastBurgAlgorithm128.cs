@@ -34,6 +34,8 @@ namespace FastBurgAlgorithmLibrary
         private int _mCoefficientsNumber;
         private int _nHistoryLengthSamples;
         private decimal[] _r;
+        private int _positionBeginning;
+        private int _positionEnd;
 
         public FastBurgAlgorithm128(double[] inputSignal)
         {
@@ -64,6 +66,8 @@ namespace FastBurgAlgorithmLibrary
             _absolutePosition = position;
             _mCoefficientsNumber = coefficientsNumber;
             _nHistoryLengthSamples = historyLengthSamples;
+            _positionBeginning = _absolutePosition - _nHistoryLengthSamples;
+            _positionEnd = _absolutePosition - 1;
 
             CreateInternalVariables();
 
@@ -125,8 +129,7 @@ namespace FastBurgAlgorithmLibrary
             double prediction = 0;
             for (var index = 1; index <= _aPredictionCoefs.Length - 1; index++)
                 prediction -= (double) _aPredictionCoefs[index] *
-                              _xInputSignal[_absolutePosition -
-                                            _nHistoryLengthSamples - 1 +
+                              _xInputSignal[_positionBeginning - 1 +
                                             index];
 
             return prediction;
@@ -168,7 +171,8 @@ namespace FastBurgAlgorithmLibrary
             for (var index = 0; index <= _iIterationCounter; index++)
                 _g[index] =
                     oldG[index] +
-                    _kReflectionCoefs[_iIterationCounter - 1] * oldG[JinversOrder(index, _iIterationCounter)] +
+                    _kReflectionCoefs[_iIterationCounter - 1] *
+                    oldG[JinversOrder(index, _iIterationCounter)] +
                     _deltaRAndAProduct[index];
 
             for (var index = 0; index <= _iIterationCounter; index++)
@@ -176,11 +180,15 @@ namespace FastBurgAlgorithmLibrary
         }
 
         /// <summary>
-        ///     Calculates vector deltaRAndAProduct. For details see step 6 of algorithm on page 3 of
+        ///     Calculates vector deltaRAndAProduct. For details see step 6
+        ///     of algorithm on page 3 of
         ///     A Fast Implementation of Burg’s Method by Koen Vos
         /// </summary>
         private void ComputeDeltaRMultByA()
         {
+            var positionBeginning = _positionBeginning + _iIterationCounter;
+            var positionEnd = _positionEnd - _iIterationCounter;
+
             for (var indexRow = 0; indexRow <= _iIterationCounter; indexRow++)
             {
                 decimal innerProduct1 = 0;
@@ -190,21 +198,17 @@ namespace FastBurgAlgorithmLibrary
                     indexColumn++)
                 {
                     innerProduct1 +=
-                        (decimal) _xInputSignal[_absolutePosition - _nHistoryLengthSamples +
-                                                _iIterationCounter - indexColumn] *
+                        (decimal) _xInputSignal[positionBeginning - indexColumn] *
                         _aPredictionCoefs[indexColumn];
                     innerProduct2 +=
-                        (decimal) _xInputSignal[_absolutePosition - 1 -
-                                                _iIterationCounter + indexColumn] *
+                        (decimal) _xInputSignal[positionEnd + indexColumn] *
                         _aPredictionCoefs[indexColumn];
                 }
 
                 _deltaRAndAProduct[indexRow] =
-                    -(decimal) _xInputSignal[_absolutePosition - _nHistoryLengthSamples +
-                                             _iIterationCounter - indexRow] *
+                    -(decimal) _xInputSignal[positionBeginning - indexRow] *
                     innerProduct1 -
-                    (decimal) _xInputSignal[_absolutePosition - 1 -
-                                            _iIterationCounter + indexRow] *
+                    (decimal) _xInputSignal[positionEnd + indexRow] *
                     innerProduct2;
             }
         }
@@ -219,11 +223,10 @@ namespace FastBurgAlgorithmLibrary
 
             for (var index = 0; index <= _iIterationCounter - 1; index++)
                 _r[index + 1] = oldR[index] -
-                                (decimal) _xInputSignal[_absolutePosition - _nHistoryLengthSamples + index] *
-                                (decimal) _xInputSignal[
-                                    _absolutePosition - _nHistoryLengthSamples + _iIterationCounter] -
-                                (decimal) _xInputSignal[_absolutePosition - 1 - index] *
-                                (decimal) _xInputSignal[_absolutePosition - 1 - _iIterationCounter];
+                                (decimal) _xInputSignal[_positionBeginning + index] *
+                                (decimal) _xInputSignal[_positionBeginning + _iIterationCounter] -
+                                (decimal) _xInputSignal[_positionEnd - index] *
+                                (decimal) _xInputSignal[_positionEnd - _iIterationCounter];
 
             _r[0] = 2 * _c[_iIterationCounter + 1];
         }
@@ -239,7 +242,8 @@ namespace FastBurgAlgorithmLibrary
             for (var index = 0; index <= _iIterationCounter + 1; index++)
                 _aPredictionCoefs[index] = oldAPredictionCoefs[index] +
                                            _kReflectionCoefs[_iIterationCounter] *
-                                           oldAPredictionCoefs[JinversOrder(index, _iIterationCounter + 1)];
+                                           oldAPredictionCoefs[JinversOrder(
+                                               index, _iIterationCounter + 1)];
         }
 
         /// <summary>
@@ -249,7 +253,8 @@ namespace FastBurgAlgorithmLibrary
         private void ComputeReflectionCoef()
         {
             decimal nominator = 0;
-            var denominator = 0.000000000000000000000000001M;
+            const decimal smallNumber = 0.000000000000000000000000001M;
+            var denominator = smallNumber;
 
             for (var index = 0; index <= _iIterationCounter + 1; index++)
             {
@@ -286,10 +291,10 @@ namespace FastBurgAlgorithmLibrary
             _iIterationCounter = 0;
             _aPredictionCoefs[0] = 1;
             _g[0] = 2 * _c[0] -
-                    Math.Abs((decimal) _xInputSignal[_absolutePosition - _nHistoryLengthSamples]) *
-                    Math.Abs((decimal) _xInputSignal[_absolutePosition - _nHistoryLengthSamples]) -
-                    Math.Abs((decimal) _xInputSignal[_absolutePosition - 1]) *
-                    Math.Abs((decimal) _xInputSignal[_absolutePosition - 1]);
+                    Math.Abs((decimal) _xInputSignal[_positionBeginning]) *
+                    Math.Abs((decimal) _xInputSignal[_positionBeginning]) -
+                    Math.Abs((decimal) _xInputSignal[_positionEnd]) *
+                    Math.Abs((decimal) _xInputSignal[_positionEnd]);
             _g[1] = 2 * _c[1];
             // the paper says r[1], error in paper?
             _r[0] = 2 * _c[1];
@@ -305,8 +310,8 @@ namespace FastBurgAlgorithmLibrary
             for (var j = 0; j <= _mCoefficientsNumber; j++)
             {
                 _c[j] = 0;
-                for (var index = _absolutePosition - _nHistoryLengthSamples;
-                    index <= _absolutePosition - 1 - j;
+                for (var index = _positionBeginning;
+                    index <= _positionEnd - j;
                     index++)
                     _c[j] += (decimal) _xInputSignal[index] * (decimal) _xInputSignal[index + j];
             }
