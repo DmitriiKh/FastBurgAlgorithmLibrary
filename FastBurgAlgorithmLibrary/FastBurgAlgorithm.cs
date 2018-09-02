@@ -23,8 +23,10 @@ namespace FastBurgAlgorithmLibrary
         private readonly double[] x_inputSignal;
 
         private Data _data;
+        private int _positionBeginning;
+        private int _positionEnd;
 
-        public FastBurgAlgorithm(double[] inputSignal) 
+        public FastBurgAlgorithm(double[] inputSignal)
         {
             x_inputSignal = inputSignal;
         }
@@ -49,6 +51,8 @@ namespace FastBurgAlgorithmLibrary
             absolutePosition = position;
             m_coefficientsNumber = coefficientsNumber;
             N_historyLengthSamples = historyLengthSamples;
+            _positionBeginning = absolutePosition - N_historyLengthSamples;
+            _positionEnd = absolutePosition - 1;
 
             CreateInternalVariables(precision);
 
@@ -133,6 +137,9 @@ namespace FastBurgAlgorithmLibrary
         /// </summary>
         private void ComputeDeltaRMultByA()
         {
+            var positionBeginning = _positionBeginning + i_iterationCounter;
+            var positionEnd = _positionEnd - i_iterationCounter;
+
             for (int indexRow = 0; indexRow <= i_iterationCounter; indexRow++)
             {
                 dynamic innerProduct1 = 0;
@@ -142,21 +149,17 @@ namespace FastBurgAlgorithmLibrary
                     indexColumn++)
                 {
                     innerProduct1 +=
-                        _data.DoubleToInternal(x_inputSignal[absolutePosition - N_historyLengthSamples + 
-                            i_iterationCounter - indexColumn]) * 
+                        _data.DoubleToInternal(x_inputSignal[positionBeginning - indexColumn]) * 
                         _data.a_predictionCoefs[indexColumn];
                     innerProduct2 +=
-                        _data.DoubleToInternal(x_inputSignal[absolutePosition - 1 - 
-                            i_iterationCounter + indexColumn]) * 
+                        _data.DoubleToInternal(x_inputSignal[positionEnd + indexColumn]) * 
                         _data.a_predictionCoefs[indexColumn];
                 }
 
                 _data.deltaRAndAProduct[indexRow] =
-                    -_data.DoubleToInternal(x_inputSignal[absolutePosition - N_historyLengthSamples + 
-                        i_iterationCounter - indexRow]) *
+                    -_data.DoubleToInternal(x_inputSignal[positionBeginning - indexRow]) *
                     innerProduct1 -
-                    _data.DoubleToInternal(x_inputSignal[absolutePosition - 1 - 
-                        i_iterationCounter + indexRow]) * 
+                    _data.DoubleToInternal(x_inputSignal[positionEnd + indexRow]) * 
                     innerProduct2;
             }
         }
@@ -172,10 +175,10 @@ namespace FastBurgAlgorithmLibrary
             for (int index = 0; index <= i_iterationCounter - 1; index++)
             {
                 _data.r[index + 1] = _data.old_r[index] -
-                    _data.DoubleToInternal(x_inputSignal[absolutePosition - N_historyLengthSamples + index]) *
-                    _data.DoubleToInternal(x_inputSignal[absolutePosition - N_historyLengthSamples + i_iterationCounter]) -
-                                     _data.DoubleToInternal(x_inputSignal[absolutePosition - 1 - index]) *
-                                     _data.DoubleToInternal(x_inputSignal[absolutePosition - 1 - i_iterationCounter]);
+                    _data.DoubleToInternal(x_inputSignal[_positionBeginning + index]) *
+                    _data.DoubleToInternal(x_inputSignal[_positionBeginning + i_iterationCounter]) -
+                                     _data.DoubleToInternal(x_inputSignal[_positionEnd - index]) *
+                                     _data.DoubleToInternal(x_inputSignal[_positionEnd - i_iterationCounter]);
             }
 
             _data.r[0] = 2 * _data.c[i_iterationCounter + 1];
@@ -241,10 +244,10 @@ namespace FastBurgAlgorithmLibrary
             i_iterationCounter = 0;
             _data.a_predictionCoefs[0] = 1;
             _data.g[0] = 2 * _data.c[0] -
-                Math.Abs(_data.DoubleToInternal(x_inputSignal[absolutePosition - N_historyLengthSamples])) *
-                Math.Abs(_data.DoubleToInternal(x_inputSignal[absolutePosition - N_historyLengthSamples])) -
-                Math.Abs(_data.DoubleToInternal(x_inputSignal[absolutePosition - 1])) *
-                Math.Abs(_data.DoubleToInternal(x_inputSignal[absolutePosition - 1]));
+                Math.Abs(_data.DoubleToInternal(x_inputSignal[_positionBeginning])) *
+                Math.Abs(_data.DoubleToInternal(x_inputSignal[_positionBeginning])) -
+                Math.Abs(_data.DoubleToInternal(x_inputSignal[_positionEnd])) *
+                Math.Abs(_data.DoubleToInternal(x_inputSignal[_positionEnd]));
             _data.g[1] = 2 * _data.c[1];
             // the paper says r[1], error in paper?
             _data.r[0] = 2 * _data.c[1];
@@ -260,8 +263,8 @@ namespace FastBurgAlgorithmLibrary
             for (int j = 0; j <= m_coefficientsNumber; j++)
             {
                 _data.c[j] = 0;
-                for (int index = absolutePosition - N_historyLengthSamples; 
-                    index <= absolutePosition - 1 - j; 
+                for (int index = _positionBeginning; 
+                    index <= _positionEnd - j; 
                     index++)
                     _data.c[j] += _data.DoubleToInternal(x_inputSignal[index]) * _data.DoubleToInternal(x_inputSignal[index + j]);
             }
