@@ -35,6 +35,8 @@ namespace FastBurgAlgorithmLibrary
         private int _nHistoryLengthSamples;
         private T[] _r;
         private IOperations<T> _operations;
+        private int _positionBeginning;
+        private int _positionEnd;
 
         public FastBurgAlgorithm(double[] inputSignal)
         {
@@ -69,6 +71,8 @@ namespace FastBurgAlgorithmLibrary
             _absolutePosition = position;
             _mCoefficientsNumber = coefficientsNumber;
             _nHistoryLengthSamples = historyLengthSamples;
+            _positionBeginning = _absolutePosition - _nHistoryLengthSamples;
+            _positionEnd = _absolutePosition - 1;
 
             CreateInternalVariables();
 
@@ -139,8 +143,7 @@ namespace FastBurgAlgorithmLibrary
             {
                 var multResult = _operations.Multiply(
                     _aPredictionCoefs[index],
-                    _xInputSignal[_absolutePosition -
-                                  _nHistoryLengthSamples - 1 +
+                    _xInputSignal[_positionBeginning - 1 +
                                   index]);
                 prediction -= (double)Convert.ChangeType(
                     multResult,
@@ -203,11 +206,15 @@ namespace FastBurgAlgorithmLibrary
         }
 
         /// <summary>
-        ///     Calculates vector deltaRAndAProduct. For details see step 6 of algorithm on page 3 of
+        ///     Calculates vector deltaRAndAProduct. For details see step 6
+        ///     of algorithm on page 3 of
         ///     A Fast Implementation of Burg’s Method by Koen Vos
         /// </summary>
         private void ComputeDeltaRMultByA()
         {
+            var positionBeginning = _positionBeginning + _iIterationCounter;
+            var positionEnd = _positionEnd - _iIterationCounter;
+
             for (var indexRow = 0; indexRow <= _iIterationCounter; indexRow++)
             {
                 var innerProduct1 = (T) Convert.ChangeType(0, typeof(T));
@@ -220,15 +227,13 @@ namespace FastBurgAlgorithmLibrary
                         _operations.Add(
                             innerProduct1,
                             _operations.Multiply(
-                                _xInputSignal[_absolutePosition - _nHistoryLengthSamples +
-                                              _iIterationCounter - indexColumn],
+                                _xInputSignal[positionBeginning - indexColumn],
                                 _aPredictionCoefs[indexColumn]));
                     innerProduct2 =
                         _operations.Add(
                             innerProduct2,
                             _operations.Multiply(
-                                _xInputSignal[_absolutePosition - 1 -
-                                      _iIterationCounter + indexColumn],
+                                _xInputSignal[positionEnd + indexColumn],
                                 _aPredictionCoefs[indexColumn]));
                 }
 
@@ -237,12 +242,10 @@ namespace FastBurgAlgorithmLibrary
                         _operations.Subtract(
                             (T) Convert.ChangeType(0, typeof(T)),
                             _operations.Multiply(
-                                _xInputSignal[_absolutePosition - _nHistoryLengthSamples +
-                                   _iIterationCounter - indexRow],
+                                _xInputSignal[positionBeginning - indexRow],
                                 innerProduct1)),
                         _operations.Multiply(
-                            _xInputSignal[_absolutePosition - 1 -
-                                  _iIterationCounter + indexRow],
+                            _xInputSignal[positionEnd + indexRow],
                             innerProduct2));
             }
         }
@@ -260,11 +263,11 @@ namespace FastBurgAlgorithmLibrary
                                     _operations.Subtract(
                                         oldR[index],
                                         _operations.Multiply(
-                                            _xInputSignal[_absolutePosition - _nHistoryLengthSamples + index],
-                                            _xInputSignal[_absolutePosition - _nHistoryLengthSamples + _iIterationCounter])),
+                                            _xInputSignal[_positionBeginning + index],
+                                            _xInputSignal[_positionBeginning + _iIterationCounter])),
                                     _operations.Multiply(
-                                        _xInputSignal[_absolutePosition - 1 - index],
-                                        _xInputSignal[_absolutePosition - 1 - _iIterationCounter]));
+                                        _xInputSignal[_positionEnd - index],
+                                        _xInputSignal[_positionEnd - _iIterationCounter]));
 
             _r[0] = _operations.Multiply(
                         (T) Convert.ChangeType(2, typeof(T)),
@@ -284,7 +287,8 @@ namespace FastBurgAlgorithmLibrary
                                                oldAPredictionCoefs[index],
                                                _operations.Multiply(
                                                    _kReflectionCoefs[_iIterationCounter],
-                                                   oldAPredictionCoefs[JinversOrder(index, _iIterationCounter + 1)]));
+                                                   oldAPredictionCoefs[JinversOrder(
+                                                       index, _iIterationCounter + 1)]));
         }
 
         /// <summary>
@@ -347,11 +351,11 @@ namespace FastBurgAlgorithmLibrary
                                 (T) Convert.ChangeType(2, typeof(T)),
                                 _c[0]),
                             _operations.Multiply(
-                                _operations.Abs(_xInputSignal[_absolutePosition - _nHistoryLengthSamples]),
-                                _operations.Abs(_xInputSignal[_absolutePosition - _nHistoryLengthSamples]))),
+                                _operations.Abs(_xInputSignal[_positionBeginning]),
+                                _operations.Abs(_xInputSignal[_positionBeginning]))),
                         _operations.Multiply(
-                            _operations.Abs(_xInputSignal[_absolutePosition - 1]),
-                            _operations.Abs(_xInputSignal[_absolutePosition - 1])));
+                            _operations.Abs(_xInputSignal[_positionEnd]),
+                            _operations.Abs(_xInputSignal[_positionEnd])));
             _g[1] = _operations.Multiply(
                         (T)Convert.ChangeType(2, typeof(T)),
                         _c[1]);
@@ -371,8 +375,8 @@ namespace FastBurgAlgorithmLibrary
             for (var j = 0; j <= _mCoefficientsNumber; j++)
             {
                 _c[j] = (T)Convert.ChangeType(0, typeof(T));
-                for (var index = _absolutePosition - _nHistoryLengthSamples;
-                    index <= _absolutePosition - 1 - j;
+                for (var index = _positionBeginning;
+                    index <= _positionEnd - j;
                     index++)
                     _c[j] = _operations.Add(
                                 _c[j],
