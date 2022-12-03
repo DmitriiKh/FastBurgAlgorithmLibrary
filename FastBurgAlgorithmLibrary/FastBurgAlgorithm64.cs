@@ -112,9 +112,9 @@ namespace FastBurgAlgorithmLibrary
         public double GetForwardPrediction()
         {
             double prediction = 0;
-            for (var index = 1; index <= _aPredictionCoefs.Length - 1; index++)
-                prediction -= _aPredictionCoefs[index] *
-                              _xInputSignal[_absolutePosition - index];
+                for (var index = 1; index <= _aPredictionCoefs.Length - 1; index++)
+                    prediction -= _aPredictionCoefs[index] *
+                                  _xInputSignal[_absolutePosition - index];
 
             return prediction;
         }
@@ -127,11 +127,11 @@ namespace FastBurgAlgorithmLibrary
         public double GetBackwardPrediction()
         {
             double prediction = 0;
-            for (var index = 1; index <= _aPredictionCoefs.Length - 1; index++)
-                prediction -= _aPredictionCoefs[index] *
-                              _xInputSignal[_positionBeginning - 1 +
-                                            index];
-
+                for (var index = 1; index <= _aPredictionCoefs.Length - 1; index++)
+                    prediction -= _aPredictionCoefs[index] *
+                                  _xInputSignal[_positionBeginning - 1 +
+                                                index];
+            
             return prediction;
         }
 
@@ -167,16 +167,16 @@ namespace FastBurgAlgorithmLibrary
         {
             var oldG = (double[]) _g.Clone();
 
-            // g.Length is i_iterationCounter + 1
-            for (var index = 0; index <= _iIterationCounter; index++)
-                _g[index] =
-                    oldG[index] +
-                    _kReflectionCoefs[_iIterationCounter - 1] * 
-                    oldG[JinversOrder(index, _iIterationCounter)] +
-                    _deltaRAndAProduct[index];
+                // g.Length is i_iterationCounter + 1
+                for (var index = 0; index <= _iIterationCounter; index++)
+                    _g[index] =
+                        oldG[index] +
+                        _kReflectionCoefs[_iIterationCounter - 1] *
+                        oldG[JinversOrder(index, _iIterationCounter)] +
+                        _deltaRAndAProduct[index];
 
-            for (var index = 0; index <= _iIterationCounter; index++)
-                _g[_iIterationCounter + 1] += _r[index] * _aPredictionCoefs[index];
+                for (var index = 0; index <= _iIterationCounter; index++)
+                    _g[_iIterationCounter + 1] += _r[index] * _aPredictionCoefs[index];
         }
 
         /// <summary>
@@ -189,22 +189,20 @@ namespace FastBurgAlgorithmLibrary
             var positionBeginning = _positionBeginning + _iIterationCounter;
             var positionEnd = _positionEnd - _iIterationCounter;
 
+            double innerProduct1 = 0;
+            double innerProduct2 = 0;
+            for (var indexColumn = 0; indexColumn <= _iIterationCounter; indexColumn++)
+            {
+                innerProduct1 +=
+                    _xInputSignal[positionBeginning - indexColumn] *
+                    _aPredictionCoefs[indexColumn];
+                innerProduct2 +=
+                    _xInputSignal[positionEnd + indexColumn] *
+                    _aPredictionCoefs[indexColumn];
+            }
+
             for (var indexRow = 0; indexRow <= _iIterationCounter; indexRow++)
             {
-                double innerProduct1 = 0;
-                double innerProduct2 = 0;
-                for (var indexColumn = 0;
-                    indexColumn <= _iIterationCounter;
-                    indexColumn++)
-                {
-                    innerProduct1 +=
-                        _xInputSignal[positionBeginning - indexColumn] *
-                        _aPredictionCoefs[indexColumn];
-                    innerProduct2 +=
-                        _xInputSignal[positionEnd + indexColumn] *
-                        _aPredictionCoefs[indexColumn];
-                }
-
                 _deltaRAndAProduct[indexRow] =
                     -_xInputSignal[positionBeginning - indexRow] *
                     innerProduct1 -
@@ -221,16 +219,16 @@ namespace FastBurgAlgorithmLibrary
         {
             var oldR = (double[]) _r.Clone();
 
-            for (var index = 0; index <= _iIterationCounter - 1; index++)
-            {
-                _r[index + 1] = oldR[index] -
-                                _xInputSignal[_positionBeginning + index] *
-                                _xInputSignal[_positionBeginning + _iIterationCounter] -
-                                _xInputSignal[_positionEnd - index] *
-                                _xInputSignal[_positionEnd - _iIterationCounter];
-            }
+                for (var index = 0; index <= _iIterationCounter - 1; index++)
+                {
+                    _r[index + 1] = oldR[index] -
+                                    _xInputSignal[_positionBeginning + index] *
+                                    _xInputSignal[_positionBeginning + _iIterationCounter] -
+                                    _xInputSignal[_positionEnd - index] *
+                                    _xInputSignal[_positionEnd - _iIterationCounter];
+                }
 
-            _r[0] = 2 * _c[_iIterationCounter + 1];
+                _r[0] = 2 * _c[_iIterationCounter + 1];
         }
 
         /// <summary>
@@ -241,10 +239,10 @@ namespace FastBurgAlgorithmLibrary
         {
             var oldAPredictionCoefs = (double[]) _aPredictionCoefs.Clone();
 
-            for (var index = 0; index <= _iIterationCounter + 1; index++)
-                _aPredictionCoefs[index] = oldAPredictionCoefs[index] +
-                                           _kReflectionCoefs[_iIterationCounter] *
-                                           oldAPredictionCoefs[JinversOrder(index, _iIterationCounter + 1)];
+                for (var index = 0; index <= _iIterationCounter + 1; index++)
+                    _aPredictionCoefs[index] = oldAPredictionCoefs[index] +
+                                               _kReflectionCoefs[_iIterationCounter] *
+                                               oldAPredictionCoefs[JinversOrder(index, _iIterationCounter + 1)];
         }
 
         /// <summary>
@@ -257,14 +255,14 @@ namespace FastBurgAlgorithmLibrary
             const double smallNumber = double.Epsilon;
             var denominator = smallNumber;
 
-            for (var index = 0; index <= _iIterationCounter + 1; index++)
-            {
-                nominator += _aPredictionCoefs[index] *
-                             _g[JinversOrder(index, _iIterationCounter + 1)];
-                denominator += _aPredictionCoefs[index] * _g[index];
-            }
+                for (var index = 0; index <= _iIterationCounter + 1; index++)
+                {
+                    nominator += _aPredictionCoefs[index] *
+                                 _g[JinversOrder(index, _iIterationCounter + 1)];
+                    denominator += _aPredictionCoefs[index] * _g[index];
+                }
 
-            _kReflectionCoefs[_iIterationCounter] = -nominator / denominator;
+                _kReflectionCoefs[_iIterationCounter] = -nominator / denominator;
         }
 
         /// <summary>
@@ -291,14 +289,14 @@ namespace FastBurgAlgorithmLibrary
 
             _iIterationCounter = 0;
             _aPredictionCoefs[0] = 1;
-            _g[0] = 2 * _c[0] -
-                    Math.Abs(_xInputSignal[_positionBeginning]) *
-                    Math.Abs(_xInputSignal[_positionBeginning]) -
-                    Math.Abs(_xInputSignal[_positionEnd]) *
-                    Math.Abs(_xInputSignal[_positionEnd]);
-            _g[1] = 2 * _c[1];
-            // the paper says r[1], error in paper?
-            _r[0] = 2 * _c[1];
+                _g[0] = 2 * _c[0] -
+                        Math.Abs(_xInputSignal[_positionBeginning]) *
+                        Math.Abs(_xInputSignal[_positionBeginning]) -
+                        Math.Abs(_xInputSignal[_positionEnd]) *
+                        Math.Abs(_xInputSignal[_positionEnd]);
+                _g[1] = 2 * _c[1];
+                // the paper says r[1], error in paper?
+                _r[0] = 2 * _c[1];
         }
 
         /// <summary>

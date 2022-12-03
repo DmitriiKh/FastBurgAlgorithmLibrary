@@ -189,26 +189,24 @@ namespace FastBurgAlgorithmLibrary
             var positionBeginning = _positionBeginning + _iIterationCounter;
             var positionEnd = _positionEnd - _iIterationCounter;
 
+            decimal innerProduct1 = 0;
+            decimal innerProduct2 = 0;
+            for (var indexColumn = 0; indexColumn <= _iIterationCounter; indexColumn++)
+            {
+                innerProduct1 +=
+                        (decimal)_xInputSignal[positionBeginning - indexColumn] *
+                        _aPredictionCoefs[indexColumn];
+                innerProduct2 +=
+                    (decimal)_xInputSignal[positionEnd + indexColumn] *
+                    _aPredictionCoefs[indexColumn];
+            }
+
             for (var indexRow = 0; indexRow <= _iIterationCounter; indexRow++)
             {
-                decimal innerProduct1 = 0;
-                decimal innerProduct2 = 0;
-                for (var indexColumn = 0;
-                    indexColumn <= _iIterationCounter;
-                    indexColumn++)
-                {
-                    innerProduct1 +=
-                        (decimal) _xInputSignal[positionBeginning - indexColumn] *
-                        _aPredictionCoefs[indexColumn];
-                    innerProduct2 +=
-                        (decimal) _xInputSignal[positionEnd + indexColumn] *
-                        _aPredictionCoefs[indexColumn];
-                }
-
                 _deltaRAndAProduct[indexRow] =
-                    -(decimal) _xInputSignal[positionBeginning - indexRow] *
+                    -(decimal)_xInputSignal[positionBeginning - indexRow] *
                     innerProduct1 -
-                    (decimal) _xInputSignal[positionEnd + indexRow] *
+                    (decimal)_xInputSignal[positionEnd + indexRow] *
                     innerProduct2;
             }
         }
