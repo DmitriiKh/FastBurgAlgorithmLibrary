@@ -18,7 +18,7 @@ jobs:
 
     env:
       Solution_Name: FastBurgAlgorithmLibrary.sln
-      Test_Project_Path: "FastBurgAlgorithmLibraryUnitTests\FastBurgAlgorithmLibraryUnitTests.csproj"
+      Test_Project_Path: "FastBurgAlgorithmLibraryUnitTests/FastBurgAlgorithmLibraryUnitTests.csproj"
     steps:
     - name: Checkout
       uses: actions/checkout@v3
