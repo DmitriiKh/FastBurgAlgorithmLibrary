@@ -1,10 +1,9 @@
 # FastBurgAlgorithmLibrary
-Implementation of Fast Burg Algorithm by Koen Vos for real signals (like audio or stocks) in C#.
+This is an implementation of the Fast Burg Algorithm by Koen Vos for real signals (like audio or stocks) in C#.
 
-Master branch unit tests
-[![Build Status](https://travis-ci.org/DmitriiKh/FastBurgAlgorithmLibrary.svg?branch=master)]
+![Build Status](https://github.com/DmitriiKh/FastBurgAlgorithmLibrary/.github/workflows/dotnet.yml/badge.svg)
 
-# Two versions of class
+# Two versions of the class
 FastBurgAlgorithm128 uses internal variables of type decimal which gives accuracy.
 FastBurgAlgorithm64 uses internal variables of type double which gives speed.
 
@@ -12,7 +11,7 @@ FastBurgAlgorithm64 uses internal variables of type double which gives speed.
 ```csharp
 double[] input = new double[2048]; 
     
-// for this example we create sinusoid as input signal
+//For this example we create a sinusoid as the input signal
 for (int i = 0; i < input.Length; i++)
 {
     input[i] = System.Math.Sin( 
