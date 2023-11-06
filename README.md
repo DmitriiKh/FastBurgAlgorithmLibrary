@@ -1,7 +1,7 @@
 # FastBurgAlgorithmLibrary
 This is an implementation of the Fast Burg Algorithm by Koen Vos for real signals (like audio or stocks) in C#.
 
-![Build Status](https://github.com/DmitriiKh/FastBurgAlgorithmLibrary/.github/workflows/dotnet.yml/badge.svg)
+![Build Status](https://github.com/DmitriiKh/FastBurgAlgorithmLibrary/actions/workflows/dotnet.yml/badge.svg)
 
 # Two versions of the class
 FastBurgAlgorithm128 uses internal variables of type decimal which gives accuracy.
